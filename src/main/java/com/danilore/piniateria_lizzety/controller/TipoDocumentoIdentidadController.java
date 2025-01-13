@@ -1,7 +1,7 @@
 package com.danilore.piniateria_lizzety.controller;
 
 import com.danilore.piniateria_lizzety.dto.TipoDocumentoIdentidadDTO;
-import com.danilore.piniateria_lizzety.model.TipoDocumentoIdentidad;
+import com.danilore.piniateria_lizzety.model.persona.TipoDocumentoIdentidad;
 import com.danilore.piniateria_lizzety.service.TipoDocumentoIdentidadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

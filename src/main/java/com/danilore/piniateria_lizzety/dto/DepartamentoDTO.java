@@ -1,6 +1,6 @@
 package com.danilore.piniateria_lizzety.dto;
 
-import com.danilore.piniateria_lizzety.model.Departamento;
+import com.danilore.piniateria_lizzety.model.persona.Departamento;
 
 public class DepartamentoDTO {
     private int idDepartamento;

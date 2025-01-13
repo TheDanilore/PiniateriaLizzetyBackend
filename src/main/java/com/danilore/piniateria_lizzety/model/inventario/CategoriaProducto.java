@@ -1,49 +1,37 @@
-package com.danilore.piniateria_lizzety.model;
+package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tipodocumentoidentidad")
-public class TipoDocumentoIdentidad {
+@Table(name = "categoria_producto")
+public class CategoriaProducto {
+
     @Id
-    private String id;
-
-    @Column(nullable = false, unique = true)
-    private String abreviatura;
-
-    @Column(nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     private String descripcion;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
-    public TipoDocumentoIdentidad(String id, String abreviatura, String descripcion, LocalDateTime created_at,
-            LocalDateTime updated_at) {
+    public CategoriaProducto(Long id, String descripcion, LocalDateTime created_at, LocalDateTime updated_at) {
         this.id = id;
-        this.abreviatura = abreviatura;
         this.descripcion = descripcion;
         this.created_at = created_at;
         this.updated_at = updated_at;
     }
 
-    public TipoDocumentoIdentidad() {
+    public CategoriaProducto() {
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getAbreviatura() {
-        return abreviatura;
-    }
-
-    public void setAbreviatura(String abreviatura) {
-        this.abreviatura = abreviatura;
     }
 
     public String getDescripcion() {

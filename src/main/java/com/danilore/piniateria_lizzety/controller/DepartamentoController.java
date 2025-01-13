@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import com.danilore.piniateria_lizzety.dto.DepartamentoDTO;
-import com.danilore.piniateria_lizzety.model.Departamento;
+import com.danilore.piniateria_lizzety.model.persona.Departamento;
 import com.danilore.piniateria_lizzety.service.DepartamentoService;
 
 @RestController

@@ -1,7 +1,8 @@
 package com.danilore.piniateria_lizzety.dto;
 
 import java.time.LocalDateTime;
-import com.danilore.piniateria_lizzety.model.TipoDocumentoIdentidad;
+
+import com.danilore.piniateria_lizzety.model.persona.TipoDocumentoIdentidad;
 
 public class TipoDocumentoIdentidadDTO {
     private String id;

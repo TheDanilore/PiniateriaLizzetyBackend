@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.danilore.piniateria_lizzety.model.Provincia;
+
+import com.danilore.piniateria_lizzety.model.persona.Provincia;
 
 @Repository
 public interface ProvinciaRepository extends JpaRepository<Provincia, Integer> {

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.danilore.piniateria_lizzety.exception.DAOException;
-import com.danilore.piniateria_lizzety.model.TipoDocumentoIdentidad;
+import com.danilore.piniateria_lizzety.model.persona.TipoDocumentoIdentidad;
 import com.danilore.piniateria_lizzety.repository.TipoDocumentoIdentidadRepository;
 
 @Service

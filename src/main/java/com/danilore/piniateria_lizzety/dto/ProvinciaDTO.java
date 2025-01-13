@@ -1,6 +1,6 @@
 package com.danilore.piniateria_lizzety.dto;
 
-import com.danilore.piniateria_lizzety.model.Provincia;
+import com.danilore.piniateria_lizzety.model.persona.Provincia;
 
 public class ProvinciaDTO {
     private int idProvincia;

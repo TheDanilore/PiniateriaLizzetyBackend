@@ -1,7 +1,9 @@
 package com.danilore.piniateria_lizzety.repository;
 
 import org.springframework.stereotype.Repository;
-import com.danilore.piniateria_lizzety.model.TipoDocumentoIdentidad;
+
+import com.danilore.piniateria_lizzety.model.persona.TipoDocumentoIdentidad;
+
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;

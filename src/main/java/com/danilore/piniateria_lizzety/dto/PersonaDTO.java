@@ -3,8 +3,8 @@ package com.danilore.piniateria_lizzety.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.danilore.piniateria_lizzety.model.GeneroEnum;
-import com.danilore.piniateria_lizzety.model.Persona;
+import com.danilore.piniateria_lizzety.model.persona.GeneroEnum;
+import com.danilore.piniateria_lizzety.model.persona.Persona;
 
 public class PersonaDTO {
     private Long id;

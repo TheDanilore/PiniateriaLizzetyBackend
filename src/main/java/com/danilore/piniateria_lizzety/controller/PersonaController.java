@@ -1,7 +1,7 @@
 package com.danilore.piniateria_lizzety.controller;
 
 import com.danilore.piniateria_lizzety.dto.PersonaDTO;
-import com.danilore.piniateria_lizzety.model.Persona;
+import com.danilore.piniateria_lizzety.model.persona.Persona;
 import com.danilore.piniateria_lizzety.service.PersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

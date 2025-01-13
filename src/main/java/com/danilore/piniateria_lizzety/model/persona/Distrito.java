@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.model;
+package com.danilore.piniateria_lizzety.model.persona;
 
 import jakarta.persistence.*;
 

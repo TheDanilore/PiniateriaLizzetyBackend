@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.danilore.piniateria_lizzety.dto.ProvinciaDTO;
-import com.danilore.piniateria_lizzety.model.Provincia;
+import com.danilore.piniateria_lizzety.model.persona.Provincia;
 import com.danilore.piniateria_lizzety.repository.ProvinciaRepository;
 
 @Service

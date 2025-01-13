@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.danilore.piniateria_lizzety.dto.DistritoDTO;
-import com.danilore.piniateria_lizzety.model.Distrito;
+import com.danilore.piniateria_lizzety.model.persona.Distrito;
 import com.danilore.piniateria_lizzety.repository.DistritoRepository;
 
 @Service
