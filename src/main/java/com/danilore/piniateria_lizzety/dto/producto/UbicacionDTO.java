@@ -1,13 +1,7 @@
 package com.danilore.piniateria_lizzety.dto.producto;
 
 import java.time.LocalDateTime;
-
 import com.danilore.piniateria_lizzety.model.producto.Ubicacion;
-
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "ubicacion")
 public class UbicacionDTO {
 
     private Long id;

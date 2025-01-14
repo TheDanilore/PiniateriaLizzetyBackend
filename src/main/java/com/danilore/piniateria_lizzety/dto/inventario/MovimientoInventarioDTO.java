@@ -1,13 +1,9 @@
 package com.danilore.piniateria_lizzety.dto.inventario;
 
 import java.time.LocalDateTime;
-
-import com.danilore.piniateria_lizzety.dto.producto.ProductoDTO;
 import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
-import com.danilore.piniateria_lizzety.model.inventario.ItemSalida;
 import com.danilore.piniateria_lizzety.model.inventario.MovimientoInventario;
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoMovimientoEnum;
-import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 
 public class MovimientoInventarioDTO {
 
@@ -66,31 +62,27 @@ public class MovimientoInventarioDTO {
         return dto;
     }
 
-    public MovimientoInventarioDTO toEntity() {
+    public MovimientoInventario toEntity() {
         MovimientoInventario movimientoInventario = new MovimientoInventario();
         movimientoInventario.setId(this.id);
 
-        
-
-        if (this.salidaProducto != null) {
-            itemSalida.setSalidaProducto(this.salidaProducto.toEntity());
-        }
-
-        if (this.producto != null) {
-            itemSalida.setProducto(this.producto.toEntity());
-        }
-
         if (this.inventario != null) {
-            itemSalida.setInventario(this.inventario.toEntity());
+            movimientoInventario.setInventario(this.inventario.toEntity());
         }
 
-        itemSalida.setCantidad(this.cantidad);
-        itemSalida.setPrecioUnitario(this.precioUnitario);
-        itemSalida.setIgv(this.igv);
-        itemSalida.setCostoTotal(this.costoTotal);
-        itemSalida.setCreatedAt(this.createdAt);
-        itemSalida.setUpdatedAt(this.updatedAt);
-        return itemSalida;
+        movimientoInventario.setCantidad(this.cantidad);
+        movimientoInventario.setCantidadAnterior(this.cantidadAnterior);
+        movimientoInventario.setCantidadActual(this.cantidadActual);
+
+        if (this.usuario != null) {
+            movimientoInventario.setUsuario(this.usuario.toEntity());
+        }
+
+        movimientoInventario.setObservacion(this.observacion);
+        movimientoInventario.setFecha(this.fecha);
+        movimientoInventario.setCreatedAt(this.createdAt);
+        movimientoInventario.setUpdatedAt(this.updatedAt);
+        return movimientoInventario;
     }
 
     public Long getId() {
