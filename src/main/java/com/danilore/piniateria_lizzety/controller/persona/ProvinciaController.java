@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.controller;
+package com.danilore.piniateria_lizzety.controller.persona;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.danilore.piniateria_lizzety.dto.persona.ProvinciaDTO;
 import com.danilore.piniateria_lizzety.model.persona.Provincia;
-import com.danilore.piniateria_lizzety.service.ProvinciaService;
+import com.danilore.piniateria_lizzety.service.persona.ProvinciaService;
 
 @RestController
 @RequestMapping("/api/provincias")

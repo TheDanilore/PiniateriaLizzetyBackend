@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.controller;
+package com.danilore.piniateria_lizzety.controller.persona;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.danilore.piniateria_lizzety.dto.persona.DistritoDTO;
 import com.danilore.piniateria_lizzety.model.persona.Distrito;
-import com.danilore.piniateria_lizzety.service.DistritoService;
+import com.danilore.piniateria_lizzety.service.persona.DistritoService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

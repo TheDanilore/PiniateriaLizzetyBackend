@@ -1,13 +1,14 @@
-package com.danilore.piniateria_lizzety.service;
+package com.danilore.piniateria_lizzety.service.persona;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.danilore.piniateria_lizzety.dto.persona.TipoDocumentoIdentidadDTO;
 import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.persona.TipoDocumentoIdentidad;
-import com.danilore.piniateria_lizzety.repository.TipoDocumentoIdentidadRepository;
+import com.danilore.piniateria_lizzety.repository.persona.TipoDocumentoIdentidadRepository;
 
 @Service
 public class TipoDocumentoIdentidadService {
@@ -41,9 +42,10 @@ public class TipoDocumentoIdentidadService {
         return tipoDocumentoIdentidadRepository.save(tipoDocumentoIdentidadExistente);
     }
 
-    public TipoDocumentoIdentidad buscarPorId(String id) {
-        return tipoDocumentoIdentidadRepository.findById(id)
+    public TipoDocumentoIdentidadDTO buscarPorIdDTO(String id) {
+        TipoDocumentoIdentidad tipoDocumentoIdentidad = tipoDocumentoIdentidadRepository.findById(id)
                 .orElseThrow(() -> new DAOException("Tipo de documento de identidad no encontrado."));
+        return TipoDocumentoIdentidadDTO.fromEntity(tipoDocumentoIdentidad);
     }
 
     public void eliminar(String id) {

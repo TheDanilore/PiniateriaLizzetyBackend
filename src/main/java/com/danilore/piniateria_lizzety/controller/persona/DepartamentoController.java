@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.controller;
+package com.danilore.piniateria_lizzety.controller.persona;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.danilore.piniateria_lizzety.dto.persona.DepartamentoDTO;
 import com.danilore.piniateria_lizzety.model.persona.Departamento;
-import com.danilore.piniateria_lizzety.service.DepartamentoService;
+import com.danilore.piniateria_lizzety.service.persona.DepartamentoService;
 
 @RestController
 @RequestMapping("/api/departamentos")

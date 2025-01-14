@@ -1,8 +1,9 @@
-package com.danilore.piniateria_lizzety.service;
+package com.danilore.piniateria_lizzety.service.persona;
 
 import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.persona.Persona;
-import com.danilore.piniateria_lizzety.repository.PersonaRepository;
+import com.danilore.piniateria_lizzety.repository.persona.PersonaRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

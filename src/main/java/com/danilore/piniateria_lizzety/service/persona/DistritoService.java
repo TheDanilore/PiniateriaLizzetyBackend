@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.service;
+package com.danilore.piniateria_lizzety.service.persona;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.danilore.piniateria_lizzety.dto.persona.DistritoDTO;
 import com.danilore.piniateria_lizzety.model.persona.Distrito;
-import com.danilore.piniateria_lizzety.repository.DistritoRepository;
+import com.danilore.piniateria_lizzety.repository.persona.DistritoRepository;
 
 @Service
 public class DistritoService {

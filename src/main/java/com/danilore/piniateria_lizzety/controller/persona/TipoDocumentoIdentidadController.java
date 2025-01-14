@@ -1,12 +1,14 @@
-package com.danilore.piniateria_lizzety.controller;
+package com.danilore.piniateria_lizzety.controller.persona;
 
 import com.danilore.piniateria_lizzety.dto.persona.TipoDocumentoIdentidadDTO;
 import com.danilore.piniateria_lizzety.model.persona.TipoDocumentoIdentidad;
-import com.danilore.piniateria_lizzety.service.TipoDocumentoIdentidadService;
+import com.danilore.piniateria_lizzety.service.persona.TipoDocumentoIdentidadService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController // Indica que esta clase es un controlador REST
@@ -25,9 +27,8 @@ public class TipoDocumentoIdentidadController {
 
     // Buscar un tipo de documento de identidad por ID
     @GetMapping("/{id}")
-    public TipoDocumentoIdentidadDTO buscarPorId(@PathVariable String id) {
-        TipoDocumentoIdentidad tipoDocumentoIdentidad = tipoDocumentoIdentidadService.buscarPorId(id);
-        return TipoDocumentoIdentidadDTO.fromEntity(tipoDocumentoIdentidad); // Convierte a DTO antes de devolverlo
+    public ResponseEntity<TipoDocumentoIdentidadDTO> buscarPorId(@PathVariable String id) {
+        return ResponseEntity.ok(tipoDocumentoIdentidadService.buscarPorIdDTO(id));
     }
 
     // Guardar un nuevo tipo de documento de identidad

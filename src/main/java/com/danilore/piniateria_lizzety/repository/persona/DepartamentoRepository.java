@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.repository;
+package com.danilore.piniateria_lizzety.repository.persona;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

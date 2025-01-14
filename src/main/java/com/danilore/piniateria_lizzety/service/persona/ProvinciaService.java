@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.service;
+package com.danilore.piniateria_lizzety.service.persona;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.danilore.piniateria_lizzety.dto.persona.ProvinciaDTO;
 import com.danilore.piniateria_lizzety.model.persona.Provincia;
-import com.danilore.piniateria_lizzety.repository.ProvinciaRepository;
+import com.danilore.piniateria_lizzety.repository.persona.ProvinciaRepository;
 
 @Service
 public class ProvinciaService {
