@@ -5,15 +5,18 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "longitud")
-public class Longitud {
+@Table(name = "unidad_medida")
+public class UnidadMedida {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(nullable = false)
+
+    @Column(nullable = false, unique = true)
     private String descripcion;
+
+    @Column(nullable = false)
+    private String abreviatura;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -21,14 +24,26 @@ public class Longitud {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    
-    public Longitud(Long id, String descripcion) {
+    public UnidadMedida(Long id, String descripcion, String abreviatura) {
         this.id = id;
         this.descripcion = descripcion;
+        this.abreviatura = abreviatura;
     }
 
-    public Longitud() {
+    public UnidadMedida() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -46,6 +61,14 @@ public class Longitud {
         this.descripcion = descripcion;
     }
 
+    public String getAbreviatura() {
+        return abreviatura;
+    }
+
+    public void setAbreviatura(String abreviatura) {
+        this.abreviatura = abreviatura;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -54,6 +77,12 @@ public class Longitud {
         return updatedAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
 }

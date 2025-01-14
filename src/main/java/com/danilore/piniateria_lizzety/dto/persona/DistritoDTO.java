@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.dto;
+package com.danilore.piniateria_lizzety.dto.persona;
 
 import com.danilore.piniateria_lizzety.model.persona.Distrito;
 

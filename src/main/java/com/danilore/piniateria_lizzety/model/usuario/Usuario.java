@@ -23,33 +23,51 @@ public class Usuario {
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private EstadoEnum estado = EstadoEnum.Activo;
+    private String avatar;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
+    private EstadoEnum estado = EstadoEnum.ACTIVO;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "rolesusers", joinColumns = @JoinColumn(name = "idUsuario"), inverseJoinColumns = @JoinColumn(name = "idRol"))
     @JsonIgnore
     private Set<Rol> roles = new HashSet<>();
 
-    public Usuario(Long id, String nombre, String email, String password, EstadoEnum estado, LocalDateTime created_at,
-            LocalDateTime updated_at, Set<Rol> roles) {
+
+    public Usuario(Long id, String nombre, String email, String password, String avatar, EstadoEnum estado,
+            Set<Rol> roles) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.password = password;
+        this.avatar = avatar;
         this.estado = estado;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.roles = roles;
     }
 
-    // Constructores
+
     public Usuario() {
         this.roles = new HashSet<>();
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -91,28 +109,38 @@ public class Usuario {
         this.estado = estado;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
-    }
-
     public Set<Rol> getRoles() {
         return roles;
     }
 
     public void setRoles(Set<Rol> roles) {
         this.roles = roles;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

@@ -12,21 +12,25 @@ public class UsuarioDTO {
     private String nombre;
     private String email;
     private String password; // Incluye la contraseña encriptada
+    private String avatar;
     private EstadoEnum estado;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
     private List<RolDTO> roles; // Cambiar a Set<RolDTO> si prefieres conjuntos
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public UsuarioDTO(Long id, String nombre, String email, String password, EstadoEnum estado,
-            LocalDateTime created_at, LocalDateTime updated_at, List<RolDTO> roles) {
+
+
+    public UsuarioDTO(Long id, String nombre, String email, String password, String avatar, EstadoEnum estado,
+            List<RolDTO> roles, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.password = password;
+        this.avatar = avatar;
         this.estado = estado;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.roles = roles;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public UsuarioDTO() {
@@ -39,9 +43,10 @@ public class UsuarioDTO {
         dto.setNombre(usuario.getNombre());
         dto.setEmail(usuario.getEmail());
         dto.setPassword(usuario.getPassword()); // Incluye la contraseña encriptada
+        dto.setAvatar(usuario.getAvatar());
         dto.setEstado(usuario.getEstado());
-        dto.setCreated_at(usuario.getCreated_at());
-        dto.setUpdated_at(usuario.getUpdated_at());
+        dto.setCreatedAt(usuario.getCreatedAt());
+        dto.setUpdatedAt(usuario.getUpdatedAt());
         dto.setRoles(usuario.getRoles().stream()
                 .map(RolDTO::fromEntity)
                 .collect(Collectors.toList()));
@@ -55,9 +60,10 @@ public class UsuarioDTO {
         usuario.setNombre(this.nombre);
         usuario.setPassword(this.password);
         usuario.setEmail(this.email);
-        usuario.setCreated_at(this.created_at);
-        usuario.setUpdated_at(this.updated_at);
-
+        usuario.setAvatar(this.avatar);
+        usuario.setEstado(this.estado);
+        usuario.setCreatedAt(this.createdAt);
+        usuario.setUpdatedAt(this.updatedAt);
         usuario.setRoles(this.roles != null
                 ? this.roles.stream()
                         .map(RolDTO::toEntity) // Ahora válido porque implementaste `toEntity` en RolDTO
@@ -115,20 +121,28 @@ public class UsuarioDTO {
         this.password = password;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

@@ -2,9 +2,6 @@ package com.danilore.piniateria_lizzety.model.producto;
 
 import java.time.LocalDateTime;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
-import com.danilore.piniateria_lizzety.model.inventario.Proveedor;
-import com.danilore.piniateria_lizzety.model.inventario.Ubicacion;
-import com.danilore.piniateria_lizzety.model.inventario.UnidadMedida;
 
 import jakarta.persistence.*;
 
@@ -23,23 +20,23 @@ public class Producto {
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_producto", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "categoria_producto_id", referencedColumnName = "id", nullable = false)
     private CategoriaProducto categoriaProducto;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unidad_medida", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "unidad_medida_id", referencedColumnName = "id",nullable = false)
     private UnidadMedida unidadMedida;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "proveedor", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "proveedor_id", referencedColumnName = "id", nullable = false)
     private Proveedor proveedor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ubicacion", referencedColumnName = "id")
+    @JoinColumn(name = "ubicacion_id", referencedColumnName = "id")
     private Ubicacion ubicacion;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "estado", nullable = false)
     private EstadoEnum estado;
 
     @Column(name = "created_at", updatable = false)
@@ -72,6 +69,8 @@ public class Producto {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -143,6 +142,14 @@ public class Producto {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

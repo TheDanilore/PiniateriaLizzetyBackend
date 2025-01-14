@@ -1,6 +1,5 @@
 package com.danilore.piniateria_lizzety.service;
 
-import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +28,6 @@ public class TipoDocumentoIdentidadService {
             throw new DAOException("La descripcion ya está registrado.");
         }
 
-        tipoDocumentoIdentidad.setCreated_at(LocalDateTime.now());
         return tipoDocumentoIdentidadRepository.save(tipoDocumentoIdentidad);
     }
 
@@ -39,7 +37,6 @@ public class TipoDocumentoIdentidadService {
 
         tipoDocumentoIdentidadExistente.setAbreviatura(tipoDocumentoIdentidadActualizado.getAbreviatura());
         tipoDocumentoIdentidadExistente.setDescripcion(tipoDocumentoIdentidadActualizado.getDescripcion());
-        tipoDocumentoIdentidadExistente.setUpdated_at(LocalDateTime.now());
 
         return tipoDocumentoIdentidadRepository.save(tipoDocumentoIdentidadExistente);
     }

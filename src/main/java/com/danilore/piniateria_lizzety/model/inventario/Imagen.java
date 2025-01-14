@@ -14,15 +14,18 @@ public class Imagen {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(nullable = false)
     private String url;
-    private String alt_text;
+
+    @Column(name = "alt_text", nullable = false)
+    private String altText;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "producto", referencedColumnName = "id")
+    @JoinColumn(name = "producto_id", referencedColumnName = "id", nullable = false)
     private Producto producto;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventario", referencedColumnName = "id")
+    @JoinColumn(name = "inventario_id", referencedColumnName = "id", nullable = false)
     private Inventario inventario;
 
     @Column(name = "created_at", updatable = false)
@@ -31,16 +34,28 @@ public class Imagen {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Imagen(Long id, String url, String alt_text, Producto producto, Inventario inventario) {
+    public Imagen(Long id, String url, String altText, Producto producto, Inventario inventario) {
         this.id = id;
         this.url = url;
-        this.alt_text = alt_text;
+        this.altText = altText;
         this.producto = producto;
         this.inventario = inventario;
     }
 
     public Imagen() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -58,12 +73,12 @@ public class Imagen {
         this.url = url;
     }
 
-    public String getAlt_text() {
-        return alt_text;
+    public String getAltText() {
+        return altText;
     }
 
-    public void setAlt_text(String alt_text) {
-        this.alt_text = alt_text;
+    public void setAltText(String altText) {
+        this.altText = altText;
     }
 
     public Producto getProducto() {
@@ -88,6 +103,14 @@ public class Imagen {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

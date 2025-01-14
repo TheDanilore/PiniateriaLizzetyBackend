@@ -8,12 +8,15 @@ public class Distrito {
     @Id
     @Column(name = "id_distrito")
     private int idDistrito;
+
+    @Column(nullable = false)
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_provincia", referencedColumnName = "id_provincia")
+    @JoinColumn(name = "id_provincia", referencedColumnName = "id_provincia", nullable = false)
     private Provincia provincia; // FK
 
+    @Column(nullable = false, unique = true)
     private String ubigeo;
 
     public Distrito(int idDistrito, String descripcion, Provincia provincia, String ubigeo) {

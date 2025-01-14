@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoEntradaEnum;
+import com.danilore.piniateria_lizzety.model.producto.Proveedor;
 
 import jakarta.persistence.*;
 
@@ -14,15 +15,26 @@ public class EntradaProducto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    private String guia_remision;
+
+    @ManyToOne
+    @JoinColumn(name = "proveedor_id", referencedColumnName = "id", nullable = true)
+    private Proveedor proveedor;
+
+    @Column(name = "guia_remision", nullable = false, unique = true)
+    private String guiaRemision;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_entrada", nullable = false)
     private TipoEntradaEnum tipoEntrada;
 
+    @Column(nullable = false)
     private String procedencia;
+
+    @Column(nullable = false)
     private LocalDate fecha;
-    private String observaciones;
+
+    @Column(nullable = false)
+    private String observacion;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -30,18 +42,31 @@ public class EntradaProducto {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public EntradaProducto(Long id, String guia_remision, TipoEntradaEnum tipoEntrada, String procedencia,
-            LocalDate fecha, String observaciones) {
+    public EntradaProducto(Long id, Proveedor proveedor, String guiaRemision, TipoEntradaEnum tipoEntrada,
+            String procedencia, LocalDate fecha, String observacion) {
         this.id = id;
-        this.guia_remision = guia_remision;
+        this.proveedor = proveedor;
+        this.guiaRemision = guiaRemision;
         this.tipoEntrada = tipoEntrada;
         this.procedencia = procedencia;
         this.fecha = fecha;
-        this.observaciones = observaciones;
+        this.observacion = observacion;
     }
 
     public EntradaProducto() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // getters and setters
 
     public Long getId() {
         return id;
@@ -51,12 +76,12 @@ public class EntradaProducto {
         this.id = id;
     }
 
-    public String getGuia_remision() {
-        return guia_remision;
+    public String getGuiaRemision() {
+        return guiaRemision;
     }
 
-    public void setGuia_remision(String guia_remision) {
-        this.guia_remision = guia_remision;
+    public void setGuiaRemision(String guia_remision) {
+        this.guiaRemision = guia_remision;
     }
 
     public TipoEntradaEnum getTipoEntrada() {
@@ -83,12 +108,12 @@ public class EntradaProducto {
         this.fecha = fecha;
     }
 
-    public String getObservaciones() {
-        return observaciones;
+    public String getObservacion() {
+        return observacion;
     }
 
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -97,6 +122,22 @@ public class EntradaProducto {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
     }
 
 }

@@ -12,17 +12,19 @@ public class RolDTO {
     private int id;
     private String descripcion;
     private EstadoEnum estado;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private List<PermisoDTO> permisos; // Verifica que esta lista esté poblada
 
-    public RolDTO(int id, String descripcion, EstadoEnum estado, LocalDateTime created_at, LocalDateTime updated_at,
+
+
+    public RolDTO(int id, String descripcion, EstadoEnum estado, LocalDateTime createdAt, LocalDateTime updatedAt,
             List<PermisoDTO> permisos) {
         this.id = id;
         this.descripcion = descripcion;
         this.estado = estado;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.permisos = permisos;
     }
 
@@ -35,8 +37,9 @@ public class RolDTO {
         dto.setId(rol.getId());
         dto.setDescripcion(rol.getDescripcion());
         dto.setEstado(rol.getEstado());
-        dto.setCreated_at(rol.getCreated_at());
-        dto.setUpdated_at(rol.getUpdated_at());
+        dto.setEstado(rol.getEstado());
+        dto.setCreatedAt(rol.getCreatedAt());
+        dto.setUpdatedAt(rol.getUpdatedAt());
         dto.setPermisos(rol.getPermisos().stream()
                 .map(PermisoDTO::fromEntity)
                 .collect(Collectors.toList()));
@@ -48,8 +51,8 @@ public class RolDTO {
         rol.setId(this.id);
         rol.setDescripcion(this.descripcion);
         rol.setEstado(this.estado);
-        rol.setCreated_at(this.created_at);
-        rol.setUpdated_at(this.updated_at);
+        rol.setCreatedAt(this.createdAt);
+        rol.setUpdatedAt(this.updatedAt);
         rol.setPermisos(this.permisos != null
                 ? this.permisos.stream()
                         .map(PermisoDTO::toEntity)
@@ -90,20 +93,22 @@ public class RolDTO {
         this.permisos = permisos;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
+
+    
 
 }

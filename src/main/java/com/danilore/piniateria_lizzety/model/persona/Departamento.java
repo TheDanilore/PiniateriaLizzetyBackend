@@ -8,6 +8,8 @@ public class Departamento {
     @Id
     @Column(name = "id_departamento")
     private int idDepartamento;
+
+    @Column(nullable = false, unique = true)
     private String descripcion;
 
     public Departamento(int idDepartamento, String descripcion) {

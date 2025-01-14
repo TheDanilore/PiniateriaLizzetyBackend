@@ -30,7 +30,7 @@ public class RolService {
             rol.setPermisos(new HashSet<>());
         }
 
-        rol.setEstado(EstadoEnum.Activo); // Estado por defecto
+        rol.setEstado(EstadoEnum.ACTIVO); // Estado por defecto
         return rolRepository.save(rol);
     }
 

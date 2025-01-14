@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.model.inventario;
+package com.danilore.piniateria_lizzety.model.producto;
 
 import java.time.LocalDateTime;
 
@@ -14,12 +14,20 @@ public class Proveedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private Long ruc;
+
+    @Column(name = "razon_social", nullable = false, unique = true)
     private String razonSocial;
+
+    @Column(nullable = false)
     private String direccion;
+
+    @Column(nullable = false, unique = true)
     private String telefono;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
     private EstadoEnum estado;
 
     @Column(name = "created_at", updatable = false)
@@ -39,6 +47,18 @@ public class Proveedor {
 
     public Proveedor() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -94,6 +114,14 @@ public class Proveedor {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

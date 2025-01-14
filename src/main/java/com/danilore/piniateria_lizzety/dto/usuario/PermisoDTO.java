@@ -8,15 +8,15 @@ public class PermisoDTO {
     private int id;
     private String descripcion;
     private String accion;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public PermisoDTO(int id, String descripcion, String accion, LocalDateTime created_at, LocalDateTime updated_at) {
+    public PermisoDTO(int id, String descripcion, String accion, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.descripcion = descripcion;
         this.accion = accion;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public PermisoDTO(int id, String descripcion) {
@@ -32,8 +32,8 @@ public class PermisoDTO {
         dto.setId(permiso.getId());
         dto.setDescripcion(permiso.getDescripcion());
         dto.setAccion(permiso.getAccion());
-        dto.setCreated_at(permiso.getCreated_at());
-        dto.setUpdated_at(permiso.getUpdated_at());
+        dto.setCreatedAt(permiso.getCreatedAt());
+        dto.setUpdatedAt(permiso.getUpdatedAt());
         return dto;
     }
 
@@ -42,6 +42,8 @@ public class PermisoDTO {
         permiso.setId(this.id);
         permiso.setDescripcion(this.descripcion);
         permiso.setAccion(this.accion);
+        permiso.setCreatedAt(this.createdAt);
+        permiso.setUpdatedAt(this.updatedAt);
         return permiso;
     }
 
@@ -69,21 +71,6 @@ public class PermisoDTO {
         this.accion = accion;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -98,6 +85,22 @@ public class PermisoDTO {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

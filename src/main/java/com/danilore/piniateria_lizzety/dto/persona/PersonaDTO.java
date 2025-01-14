@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.dto;
+package com.danilore.piniateria_lizzety.dto.persona;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,15 +21,14 @@ public class PersonaDTO {
     private LocalDate fechaNacimiento;
     private GeneroEnum genero;
     private String lugarNacimiento;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    
 
     public PersonaDTO(Long id, String nombres, String apellidos, String direccion, String telefono,
             TipoDocumentoIdentidadDTO tipoDocumentoIdentidad, String numeroDocumento, DepartamentoDTO departamento,
             ProvinciaDTO provincia, DistritoDTO distrito, String correo, LocalDate fechaNacimiento, GeneroEnum genero,
-            String lugarNacimiento, LocalDateTime created_at, LocalDateTime updated_at) {
+            String lugarNacimiento, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -44,8 +43,8 @@ public class PersonaDTO {
         this.fechaNacimiento = fechaNacimiento;
         this.genero = genero;
         this.lugarNacimiento = lugarNacimiento;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public PersonaDTO() {
@@ -81,8 +80,8 @@ public class PersonaDTO {
         dto.setFechaNacimiento(persona.getFechaNacimiento());
         dto.setGenero(persona.getGenero());
         dto.setLugarNacimiento(persona.getLugarNacimiento());
-        dto.setCreated_at(persona.getCreated_at());
-        dto.setUpdated_at(persona.getUpdated_at());
+        dto.setCreatedAt(persona.getCreatedAt());
+        dto.setUpdatedAt(persona.getUpdatedAt());
         return dto;
     }
     
@@ -116,8 +115,8 @@ public class PersonaDTO {
         persona.setFechaNacimiento(this.fechaNacimiento);
         persona.setGenero(this.genero);
         persona.setLugarNacimiento(this.lugarNacimiento);
-        persona.setCreated_at(this.created_at);
-        persona.setUpdated_at(this.updated_at);
+        persona.setCreatedAt(this.createdAt);
+        persona.setUpdatedAt(this.updatedAt);
         return persona;
     }
 
@@ -233,22 +232,23 @@ public class PersonaDTO {
         this.lugarNacimiento = lugarNacimiento;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
-    
+
+
 
     
 }

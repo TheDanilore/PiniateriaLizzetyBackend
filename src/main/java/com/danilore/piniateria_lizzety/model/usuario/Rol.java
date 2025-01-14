@@ -16,13 +16,18 @@ public class Rol {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
+    @Column(nullable = false)
     private String descripcion;
 
     @Enumerated(EnumType.STRING)
-    private EstadoEnum estado = EstadoEnum.Activo;;
+    @Column(name = "estado", nullable = false)
+    private EstadoEnum estado = EstadoEnum.ACTIVO;;
     
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     @JsonIgnore // Ignora la serialización de esta relación
@@ -39,19 +44,29 @@ public class Rol {
 
 
 
-    public Rol(int id, String descripcion, EstadoEnum estado, LocalDateTime created_at, LocalDateTime updated_at,
+    public Rol(int id, String descripcion, EstadoEnum estado,
             Set<Usuario> usuarios, Set<Permiso> permisos) {
         this.id = id;
         this.descripcion = descripcion;
         this.estado = estado;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.usuarios = usuarios;
         this.permisos = permisos;
     }
 
     public Rol() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public int getId() {
         return id;
@@ -93,20 +108,20 @@ public class Rol {
         this.permisos = permisos;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
-    }    
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
     
 }

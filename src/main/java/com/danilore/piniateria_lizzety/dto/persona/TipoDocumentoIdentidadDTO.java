@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.dto;
+package com.danilore.piniateria_lizzety.dto.persona;
 
 import java.time.LocalDateTime;
 
@@ -8,18 +8,16 @@ public class TipoDocumentoIdentidadDTO {
     private String id;
     private String abreviatura;
     private String descripcion;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    
-
-    public TipoDocumentoIdentidadDTO(String id, String abreviatura, String descripcion, LocalDateTime created_at,
-            LocalDateTime updated_at) {
+    public TipoDocumentoIdentidadDTO(String id, String abreviatura, String descripcion, LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         this.id = id;
         this.abreviatura = abreviatura;
         this.descripcion = descripcion;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public TipoDocumentoIdentidadDTO() {
@@ -30,8 +28,8 @@ public class TipoDocumentoIdentidadDTO {
         dto.setId(tipoDocumentoIdentidad.getId());
         dto.setAbreviatura(tipoDocumentoIdentidad.getAbreviatura());
         dto.setDescripcion(tipoDocumentoIdentidad.getDescripcion());
-        dto.setCreated_at(tipoDocumentoIdentidad.getCreated_at());
-        dto.setUpdated_at(tipoDocumentoIdentidad.getUpdated_at());
+        dto.setCreatedAt(tipoDocumentoIdentidad.getCreatedAt());
+        dto.setUpdatedAt(tipoDocumentoIdentidad.getUpdatedAt());
         return dto;
     }
 
@@ -40,8 +38,8 @@ public class TipoDocumentoIdentidadDTO {
         tipoDocumentoIdentidad.setId(this.id);
         tipoDocumentoIdentidad.setAbreviatura(this.abreviatura);
         tipoDocumentoIdentidad.setDescripcion(this.descripcion);
-        tipoDocumentoIdentidad.setCreated_at(this.created_at);
-        tipoDocumentoIdentidad.setUpdated_at(this.updated_at);
+        tipoDocumentoIdentidad.setCreatedAt(this.createdAt);
+        tipoDocumentoIdentidad.setUpdatedAt(this.updatedAt);
         return tipoDocumentoIdentidad;
     }
 
@@ -69,19 +67,21 @@ public class TipoDocumentoIdentidadDTO {
         this.descripcion = descripcion;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
+
+    
 }

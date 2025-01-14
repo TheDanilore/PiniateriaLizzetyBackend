@@ -23,7 +23,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByEmailWithRoles(email)
                 .orElseThrow(() -> new DAOException("Usuario no encontrado o inactivo."));
 
-        if (usuario.getEstado() != EstadoEnum.Activo) {
+        if (usuario.getEstado() != EstadoEnum.ACTIVO) {
             throw new DAOException("Usuario no está activo.");
         }
 
@@ -58,7 +58,7 @@ public class UsuarioService {
 
         // Encriptar la contraseña
         usuario.setPassword(BCrypt.hashpw(usuario.getPassword(), BCrypt.gensalt()));
-        usuario.setEstado(EstadoEnum.Activo); // Estado por defecto
+        usuario.setEstado(EstadoEnum.ACTIVO); // Estado por defecto
         return usuarioRepository.save(usuario);
     }
 

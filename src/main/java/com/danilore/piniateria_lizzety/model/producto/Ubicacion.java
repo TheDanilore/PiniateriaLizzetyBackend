@@ -5,16 +5,18 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tamano")
-public class Tamano {
+@Table(name = "ubicacion")
+public class Ubicacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(nullable = false, unique = true)
+    private String codigo;
+
     @Column(nullable = false)
     private String descripcion;
-
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -22,14 +24,27 @@ public class Tamano {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    
-    public Tamano(Long id, String descripcion) {
+
+    public Ubicacion(Long id, String codigo, String descripcion) {
         this.id = id;
+        this.codigo = codigo;
         this.descripcion = descripcion;
     }
 
-    public Tamano() {
+    public Ubicacion() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -37,6 +52,14 @@ public class Tamano {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getDescripcion() {
@@ -53,6 +76,14 @@ public class Tamano {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

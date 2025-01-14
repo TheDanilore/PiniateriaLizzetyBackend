@@ -8,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,7 +34,6 @@ public class PersonaService {
 
         }
 
-        persona.setCreated_at(LocalDateTime.now()); // Fecha y hora actual de creación
         return personaRepository.save(persona);
     }
 
@@ -57,7 +54,6 @@ public class PersonaService {
         personaExistente.setFechaNacimiento(personaActualizada.getFechaNacimiento());
         personaExistente.setGenero(personaActualizada.getGenero());
         personaExistente.setLugarNacimiento(personaActualizada.getLugarNacimiento());
-        personaExistente.setUpdated_at(LocalDateTime.now()); // Fecha y hora actual de creación
         return personaRepository.save(personaExistente);
     }
 

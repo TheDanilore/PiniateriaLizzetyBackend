@@ -17,45 +17,52 @@ public class Persona {
     private String nombres;
     private String apellidos;
     private String direccion;
+
+    @Column(unique = true)
     private String telefono;
 
     @ManyToOne
-    @JoinColumn(name = "tipodocumentoidentidad_id", referencedColumnName = "id")
+    @JoinColumn(name = "tipodocumentoidentidad_id", referencedColumnName = "id", nullable = false)
     private TipoDocumentoIdentidad tipoDocumentoIdentidad;
 
-    @Column(name = "numero_documento")
+    @Column(name = "numero_documento", nullable = false)
     private String numeroDocumento;
 
     @ManyToOne
-    @JoinColumn(name = "departamento_id", referencedColumnName = "id_departamento")
+    @JoinColumn(name = "departamento_id", referencedColumnName = "id_departamento", nullable = false)
     private Departamento departamento;
 
     @ManyToOne
-    @JoinColumn(name = "provincia_id", referencedColumnName = "id_provincia")
+    @JoinColumn(name = "provincia_id", referencedColumnName = "id_provincia", nullable = false)
     private Provincia provincia;
 
     @ManyToOne
-    @JoinColumn(name = "distrito_id", referencedColumnName = "id_distrito")
+    @JoinColumn(name = "distrito_id", referencedColumnName = "id_distrito", nullable = false)
     private Distrito distrito;
 
+    @Column(nullable = false, unique = true)
     private String correo;
 
-    @Column(name = "fecha_nacimiento")
+    @Column(name = "fecha_nacimiento", nullable = false)
     private LocalDate fechaNacimiento;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private GeneroEnum genero;
 
     @Column(name = "lugar_nacimiento")
     private String lugarNacimiento;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Persona(Long id, String nombres, String apellidos, String direccion, String telefono,
             TipoDocumentoIdentidad tipoDocumentoIdentidad, String numeroDocumento, Departamento departamento,
             Provincia provincia, Distrito distrito, String correo, LocalDate fechaNacimiento, GeneroEnum genero,
-            String lugarNacimiento, LocalDateTime created_at, LocalDateTime updated_at) {
+            String lugarNacimiento) {
         this.id = id;
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -70,8 +77,6 @@ public class Persona {
         this.fechaNacimiento = fechaNacimiento;
         this.genero = genero;
         this.lugarNacimiento = lugarNacimiento;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public Persona() {
@@ -189,20 +194,20 @@ public class Persona {
         this.lugarNacimiento = lugarNacimiento;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

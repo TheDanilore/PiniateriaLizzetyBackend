@@ -15,26 +15,32 @@ public class MovimientoInventario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
-    @JoinColumn(name = "inventario", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "inventario_id", referencedColumnName = "id", nullable = false)
     private Inventario inventario;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_movimiento", nullable = false)
     private TipoMovimientoEnum tipoMovimiento;
 
+    @Column(nullable = false)
     private Long cantidad;
 
+    @Column(name = "cantidad_anterior", nullable = false)
     private Long cantidadAnterior;
 
+    @Column(name = "cantidad_actual", nullable = false)
     private Long cantidadActual;
 
     // Un usuario va a estar asociado a un movimiento en especifico
-    @OneToOne
-    @JoinColumn(name = "usuario", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)
     private Usuario usuario;
 
+    @Column(nullable = false, length = 500)
     private String observacion;
 
+    @Column(nullable = false)
     private String fecha;
 
     @Column(name = "created_at", updatable = false)
@@ -58,6 +64,18 @@ public class MovimientoInventario {
 
     public MovimientoInventario() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -137,6 +155,14 @@ public class MovimientoInventario {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

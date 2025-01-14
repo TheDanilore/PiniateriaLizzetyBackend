@@ -1,11 +1,9 @@
 package com.danilore.piniateria_lizzety.model.inventario;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.danilore.piniateria_lizzety.model.producto.Color;
-import com.danilore.piniateria_lizzety.model.producto.Longitud;
 import com.danilore.piniateria_lizzety.model.producto.Producto;
-import com.danilore.piniateria_lizzety.model.producto.Tamano;
 
 import jakarta.persistence.*;
 
@@ -17,24 +15,33 @@ public class Inventario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // para tener el id del producto
     @ManyToOne
-    @JoinColumn(name = "producto", referencedColumnName = "id")
+    @JoinColumn(name = "producto_id", referencedColumnName = "id", nullable = false)
     private Producto producto;
 
+    // Inventario se relaciona con longitud, muchos tamano pueden estar en un
+    // inventario
     @ManyToOne
-    @JoinColumn(name = "color", referencedColumnName = "id")
+    @JoinColumn(name = "color_id", referencedColumnName = "id", nullable = true)
     private Color color;
 
+    // Inventario se relaciona con longitud, muchos tamano pueden estar en un
+    // inventario
     @ManyToOne
-    @JoinColumn(name = "longitud", referencedColumnName = "id")
+    @JoinColumn(name = "longitud_id", referencedColumnName = "id", nullable = true)
     private Longitud longitud;
 
+    // Inventario se relaciona con tamano, muchos tamano pueden estar en un
+    // inventario
     @ManyToOne
-    @JoinColumn(name = "tamano", referencedColumnName = "id")
+    @JoinColumn(name = "tamano_id", referencedColumnName = "id", nullable = true)
     private Tamano tamano;
 
-    private double precioUnitario;
+    @Column(name = "precio_unitario", nullable = false)
+    private BigDecimal precioUnitario;
 
+    @Column(nullable = false)
     private Long cantidad;
 
     @Column(name = "created_at", updatable = false)
@@ -43,7 +50,7 @@ public class Inventario {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Inventario(Long id, Producto producto, Color color, Longitud longitud, Tamano tamano, double precioUnitario,
+    public Inventario(Long id, Producto producto, Color color, Longitud longitud, Tamano tamano, BigDecimal precioUnitario,
             Long cantidad) {
         this.id = id;
         this.producto = producto;
@@ -56,6 +63,18 @@ public class Inventario {
 
     public Inventario() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // getters and setters
 
     public Long getId() {
         return id;
@@ -97,11 +116,11 @@ public class Inventario {
         this.tamano = tamano;
     }
 
-    public double getPrecioUnitario() {
+    public BigDecimal getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(double precioUnitario) {
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 
@@ -119,6 +138,14 @@ public class Inventario {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.model.producto;
+package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.time.LocalDateTime;
 
@@ -33,6 +33,18 @@ public class Color {
     public Color() {
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
+
     public Long getId() {
         return id;
     }
@@ -63,6 +75,14 @@ public class Color {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

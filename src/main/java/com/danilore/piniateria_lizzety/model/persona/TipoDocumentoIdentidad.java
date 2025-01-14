@@ -15,19 +15,30 @@ public class TipoDocumentoIdentidad {
 
     @Column(nullable = false, unique = true)
     private String descripcion;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
 
-    public TipoDocumentoIdentidad(String id, String abreviatura, String descripcion, LocalDateTime created_at,
-            LocalDateTime updated_at) {
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    public TipoDocumentoIdentidad(String id, String abreviatura, String descripcion) {
         this.id = id;
         this.abreviatura = abreviatura;
         this.descripcion = descripcion;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public TipoDocumentoIdentidad() {
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 
     public String getId() {
@@ -54,20 +65,20 @@ public class TipoDocumentoIdentidad {
         this.descripcion = descripcion;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

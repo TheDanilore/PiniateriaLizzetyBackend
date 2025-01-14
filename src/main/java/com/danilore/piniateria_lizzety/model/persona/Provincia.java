@@ -8,10 +8,12 @@ public class Provincia {
     @Id
     @Column(name = "id_provincia")
     private int idProvincia;
+
+    @Column(nullable = false)
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_departamento", referencedColumnName = "id_departamento")
+    @JoinColumn(name = "id_departamento", referencedColumnName = "id_departamento",nullable = false)
     private Departamento departamento; // FK
 
     public Provincia(int idProvincia, String descripcion, Departamento departamento) {

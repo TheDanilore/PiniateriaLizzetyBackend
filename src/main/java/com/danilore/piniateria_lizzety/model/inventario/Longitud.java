@@ -5,14 +5,14 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "ubicacion")
-public class Ubicacion {
+@Table(name = "longitud")
+public class Longitud {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String codigo;
+    @Column(nullable = false)
     private String descripcion;
 
     @Column(name = "created_at", updatable = false)
@@ -21,15 +21,26 @@ public class Ubicacion {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
-    public Ubicacion(Long id, String codigo, String descripcion) {
+    
+    public Longitud(Long id, String descripcion) {
         this.id = id;
-        this.codigo = codigo;
         this.descripcion = descripcion;
     }
 
-    public Ubicacion() {
+    public Longitud() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -37,14 +48,6 @@ public class Ubicacion {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
     }
 
     public String getDescripcion() {
@@ -62,5 +65,15 @@ public class Ubicacion {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+
 
 }

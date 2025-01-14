@@ -1,6 +1,9 @@
 package com.danilore.piniateria_lizzety.model.inventario;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.danilore.piniateria_lizzety.model.producto.Producto;
 
 import jakarta.persistence.*;
 
@@ -13,17 +16,28 @@ public class ItemSalida {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "salida_producto", referencedColumnName = "id")
+    @JoinColumn(name = "salida_producto_id", referencedColumnName = "id", nullable = false)
     private SalidaProducto salidaProducto;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inventario", referencedColumnName = "id")
+    @JoinColumn(name = "producto_id", referencedColumnName = "id", nullable = false)
+    private Producto producto;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inventario_id", referencedColumnName = "id", nullable = false)
     private Inventario inventario;
-    
+
+    @Column(nullable = false)
     private Long cantidad;
-    private double precioUnitario;
-    private double igv;
-    private double costoTotal;
+
+    @Column(name = "precio_unitario", nullable = false)
+    private BigDecimal precioUnitario;
+
+    @Column(nullable = false)
+    private BigDecimal igv;
+
+    @Column(name = "costo_total", nullable = false)
+    private BigDecimal costoTotal;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -31,10 +45,12 @@ public class ItemSalida {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public ItemSalida(Long id, SalidaProducto salidaProducto, Inventario inventario, Long cantidad,
-            double precioUnitario, double igv, double costoTotal) {
+
+    public ItemSalida(Long id, SalidaProducto salidaProducto, Producto producto, Inventario inventario, Long cantidad,
+            BigDecimal precioUnitario, BigDecimal igv, BigDecimal costoTotal) {
         this.id = id;
         this.salidaProducto = salidaProducto;
+        this.producto = producto;
         this.inventario = inventario;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
@@ -44,6 +60,18 @@ public class ItemSalida {
 
     public ItemSalida() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // getters and setters
 
     public Long getId() {
         return id;
@@ -77,27 +105,27 @@ public class ItemSalida {
         this.cantidad = cantidad;
     }
 
-    public double getPrecioUnitario() {
+    public BigDecimal getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(double precioUnitario) {
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 
-    public double getIgv() {
+    public BigDecimal getIgv() {
         return igv;
     }
 
-    public void setIgv(double igv) {
+    public void setIgv(BigDecimal igv) {
         this.igv = igv;
     }
 
-    public double getCostoTotal() {
+    public BigDecimal getCostoTotal() {
         return costoTotal;
     }
 
-    public void setCostoTotal(double costoTotal) {
+    public void setCostoTotal(BigDecimal costoTotal) {
         this.costoTotal = costoTotal;
     }
 
@@ -107,6 +135,22 @@ public class ItemSalida {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
 }

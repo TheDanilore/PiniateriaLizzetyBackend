@@ -15,13 +15,20 @@ public class SalidaProducto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(name = "guia_salida", nullable = false, unique = true)
     private String guiaSalida;
 
     @Enumerated(EnumType.STRING)
-    private TipoSalidaEnum tipoSalidaEnum;
+    @Column(name = "tipo_salida", nullable = false)
+    private TipoSalidaEnum tipoSalida;
 
+    @Column(nullable = false)
     private String destino;
+
+    @Column(nullable = false)
     private LocalDate fecha;
+
+    @Column(nullable = false, length = 500)
     private String observacion;
 
     @Column(name = "created_at", updatable = false)
@@ -30,11 +37,11 @@ public class SalidaProducto {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public SalidaProducto(Long id, String guiaSalida, TipoSalidaEnum tipoSalidaEnum, String destino, LocalDate fecha,
+    public SalidaProducto(Long id, String guiaSalida, TipoSalidaEnum tipoSalida, String destino, LocalDate fecha,
             String observacion) {
         this.id = id;
         this.guiaSalida = guiaSalida;
-        this.tipoSalidaEnum = tipoSalidaEnum;
+        this.tipoSalida = tipoSalida;
         this.destino = destino;
         this.fecha = fecha;
         this.observacion = observacion;
@@ -42,6 +49,18 @@ public class SalidaProducto {
 
     public SalidaProducto() {
     }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
 
     public Long getId() {
         return id;
@@ -59,12 +78,12 @@ public class SalidaProducto {
         this.guiaSalida = guiaSalida;
     }
 
-    public TipoSalidaEnum getTipoSalidaEnum() {
-        return tipoSalidaEnum;
+    public TipoSalidaEnum getTipoSalida() {
+        return tipoSalida;
     }
 
-    public void setTipoSalidaEnum(TipoSalidaEnum tipoSalidaEnum) {
-        this.tipoSalidaEnum = tipoSalidaEnum;
+    public void setTipoSalida(TipoSalidaEnum tipoSalida) {
+        this.tipoSalida = tipoSalida;
     }
 
     public String getDestino() {
@@ -97,6 +116,14 @@ public class SalidaProducto {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

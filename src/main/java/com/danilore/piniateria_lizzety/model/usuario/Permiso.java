@@ -15,29 +15,47 @@ public class Permiso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false)
     private String descripcion;
+
+    @Column(nullable = false)
     private String accion;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToMany(mappedBy = "permisos")
     @JsonIgnore // Ignora la serialización de esta relación
     private Set<Rol> roles = new HashSet<>();
 
-    public Permiso(int id, String descripcion, String accion, LocalDateTime created_at, LocalDateTime updated_at,
+    public Permiso(int id, String descripcion, String accion,
             Set<Rol> roles) {
         this.id = id;
         this.descripcion = descripcion;
         this.accion = accion;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.roles = roles;
     }
 
     public Permiso() {
     }
 
-    // Getters y Setters
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    //getters and setters
+
     public int getId() {
         return id;
     }
@@ -70,19 +88,19 @@ public class Permiso {
         this.roles = roles;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
