@@ -2,6 +2,11 @@ package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.time.LocalDateTime;
 
+import com.danilore.piniateria_lizzety.model.producto.Color;
+import com.danilore.piniateria_lizzety.model.producto.Longitud;
+import com.danilore.piniateria_lizzety.model.producto.Producto;
+import com.danilore.piniateria_lizzety.model.producto.Tamano;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -32,11 +37,14 @@ public class Inventario {
 
     private Long cantidad;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Inventario(Long id, Producto producto, Color color, Longitud longitud, Tamano tamano, double precioUnitario,
-            Long cantidad, LocalDateTime created_at, LocalDateTime updated_at) {
+            Long cantidad) {
         this.id = id;
         this.producto = producto;
         this.color = color;
@@ -44,8 +52,6 @@ public class Inventario {
         this.tamano = tamano;
         this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public Inventario() {
@@ -107,20 +113,12 @@ public class Inventario {
         this.cantidad = cantidad;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
 }

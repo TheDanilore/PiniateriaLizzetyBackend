@@ -3,6 +3,8 @@ package com.danilore.piniateria_lizzety.model.inventario;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.danilore.piniateria_lizzety.model.inventario.enums.TipoEntradaEnum;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -21,19 +23,21 @@ public class EntradaProducto {
     private String procedencia;
     private LocalDate fecha;
     private String observaciones;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public EntradaProducto(Long id, String guia_remision, TipoEntradaEnum tipoEntrada, String procedencia,
-            LocalDate fecha, String observaciones, LocalDateTime created_at, LocalDateTime updated_at) {
+            LocalDate fecha, String observaciones) {
         this.id = id;
         this.guia_remision = guia_remision;
         this.tipoEntrada = tipoEntrada;
         this.procedencia = procedencia;
         this.fecha = fecha;
         this.observaciones = observaciones;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public EntradaProducto() {
@@ -87,20 +91,12 @@ public class EntradaProducto {
         this.observaciones = observaciones;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
 }

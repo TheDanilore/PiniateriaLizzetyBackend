@@ -2,6 +2,7 @@ package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.time.LocalDateTime;
 
+import com.danilore.piniateria_lizzety.model.inventario.enums.TipoMovimientoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 
 import jakarta.persistence.*;
@@ -36,12 +37,14 @@ public class MovimientoInventario {
 
     private String fecha;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public MovimientoInventario(Long id, Inventario inventario, TipoMovimientoEnum tipoMovimiento, Long cantidad,
-            Long cantidadAnterior, Long cantidadActual, Usuario usuario, String observacion, String fecha,
-            LocalDateTime created_at, LocalDateTime updated_at) {
+            Long cantidadAnterior, Long cantidadActual, Usuario usuario, String observacion, String fecha) {
         this.id = id;
         this.inventario = inventario;
         this.tipoMovimiento = tipoMovimiento;
@@ -51,8 +54,6 @@ public class MovimientoInventario {
         this.usuario = usuario;
         this.observacion = observacion;
         this.fecha = fecha;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public MovimientoInventario() {
@@ -130,20 +131,12 @@ public class MovimientoInventario {
         this.fecha = fecha;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
 }

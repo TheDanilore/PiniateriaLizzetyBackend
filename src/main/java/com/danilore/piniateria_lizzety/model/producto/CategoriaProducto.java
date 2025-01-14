@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.model.inventario;
+package com.danilore.piniateria_lizzety.model.producto;
 
 import java.time.LocalDateTime;
 
@@ -12,15 +12,18 @@ public class CategoriaProducto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(nullable = false)
     private String descripcion;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    public CategoriaProducto(Long id, String descripcion, LocalDateTime created_at, LocalDateTime updated_at) {
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    public CategoriaProducto(Long id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public CategoriaProducto() {
@@ -42,20 +45,13 @@ public class CategoriaProducto {
         this.descripcion = descripcion;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
-    }
 
 }

@@ -1,19 +1,20 @@
-package com.danilore.piniateria_lizzety.model.inventario;
+package com.danilore.piniateria_lizzety.model.producto;
 
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "unidad_medida")
-public class UnidadMedida {
+@Table(name = "tamano")
+public class Tamano {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @Column(nullable = false)
     private String descripcion;
-    private String abreviatura;
+
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -21,13 +22,13 @@ public class UnidadMedida {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public UnidadMedida(Long id, String descripcion, String abreviatura) {
+    
+    public Tamano(Long id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
-        this.abreviatura = abreviatura;
     }
 
-    public UnidadMedida() {
+    public Tamano() {
     }
 
     public Long getId() {
@@ -44,14 +45,6 @@ public class UnidadMedida {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public String getAbreviatura() {
-        return abreviatura;
-    }
-
-    public void setAbreviatura(String abreviatura) {
-        this.abreviatura = abreviatura;
     }
 
     public LocalDateTime getCreatedAt() {

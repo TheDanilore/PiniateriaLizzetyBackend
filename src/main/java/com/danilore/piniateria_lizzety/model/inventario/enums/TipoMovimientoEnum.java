@@ -1,4 +1,4 @@
-package com.danilore.piniateria_lizzety.model.inventario;
+package com.danilore.piniateria_lizzety.model.inventario.enums;
 
 public enum TipoMovimientoEnum {
 

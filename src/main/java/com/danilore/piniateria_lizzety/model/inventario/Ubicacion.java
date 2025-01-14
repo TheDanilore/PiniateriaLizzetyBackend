@@ -14,17 +14,18 @@ public class Ubicacion {
     
     private String codigo;
     private String descripcion;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
 
-
-    public Ubicacion(Long id, String codigo, String descripcion, LocalDateTime created_at, LocalDateTime updated_at) {
+    public Ubicacion(Long id, String codigo, String descripcion) {
         this.id = id;
         this.codigo = codigo;
         this.descripcion = descripcion;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public Ubicacion() {
@@ -54,20 +55,12 @@ public class Ubicacion {
         this.descripcion = descripcion;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
 }

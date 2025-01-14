@@ -24,11 +24,15 @@ public class ItemEntrada {
     private double precioUnitario;
     private double igv;
     private double costoTotal;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public ItemEntrada(Long id, EntradaProducto entradaProducto, Inventario inventario, Long cantidad,
-            double precioUnitario, double igv, double costoTotal, LocalDateTime created_at, LocalDateTime updated_at) {
+            double precioUnitario, double igv, double costoTotal) {
         this.id = id;
         this.entradaProducto = entradaProducto;
         this.inventario = inventario;
@@ -36,8 +40,6 @@ public class ItemEntrada {
         this.precioUnitario = precioUnitario;
         this.igv = igv;
         this.costoTotal = costoTotal;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public ItemEntrada() {
@@ -99,20 +101,12 @@ public class ItemEntrada {
         this.costoTotal = costoTotal;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
 }

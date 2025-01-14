@@ -1,8 +1,10 @@
-package com.danilore.piniateria_lizzety.model.inventario;
+package com.danilore.piniateria_lizzety.model.producto;
 
 import java.time.LocalDateTime;
-
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
+import com.danilore.piniateria_lizzety.model.inventario.Proveedor;
+import com.danilore.piniateria_lizzety.model.inventario.Ubicacion;
+import com.danilore.piniateria_lizzety.model.inventario.UnidadMedida;
 
 import jakarta.persistence.*;
 
@@ -13,38 +15,44 @@ public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @Column(nullable = false,length = 200)
     private String nombre;
+
+    @Column(nullable = false,length = 500)
     private String descripcion;
 
-    @ManyToOne
-    @JoinColumn(name = "categoria_producto", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_producto", referencedColumnName = "id", nullable = false)
     private CategoriaProducto categoriaProducto;
 
-    @ManyToOne
-    @JoinColumn(name = "unidad_medida", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unidad_medida", referencedColumnName = "id",nullable = false)
     private UnidadMedida unidadMedida;
 
-    @ManyToOne
-    @JoinColumn(name = "proveedor", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "proveedor", referencedColumnName = "id", nullable = false)
     private Proveedor proveedor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ubicacion", referencedColumnName = "id")
     private Ubicacion ubicacion;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EstadoEnum estado;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Producto() {
     }
 
     public Producto(Long id, String nombre, String descripcion, CategoriaProducto categoriaProducto,
-            UnidadMedida unidadMedida, Proveedor proveedor, Ubicacion ubicacion, EstadoEnum estado,
-            LocalDateTime created_at, LocalDateTime updated_at) {
+            UnidadMedida unidadMedida, Proveedor proveedor, Ubicacion ubicacion, EstadoEnum estado) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -53,8 +61,16 @@ public class Producto {
         this.proveedor = proveedor;
         this.ubicacion = ubicacion;
         this.estado = estado;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -121,20 +137,12 @@ public class Producto {
         this.estado = estado;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
 }

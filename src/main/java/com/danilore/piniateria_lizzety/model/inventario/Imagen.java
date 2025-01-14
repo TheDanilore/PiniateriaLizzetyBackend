@@ -2,6 +2,8 @@ package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.time.LocalDateTime;
 
+import com.danilore.piniateria_lizzety.model.producto.Producto;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -23,18 +25,18 @@ public class Imagen {
     @JoinColumn(name = "inventario", referencedColumnName = "id")
     private Inventario inventario;
 
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    public Imagen(Long id, String url, String alt_text, Producto producto, Inventario inventario,
-            LocalDateTime created_at, LocalDateTime updated_at) {
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    public Imagen(Long id, String url, String alt_text, Producto producto, Inventario inventario) {
         this.id = id;
         this.url = url;
         this.alt_text = alt_text;
         this.producto = producto;
         this.inventario = inventario;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
     }
 
     public Imagen() {
@@ -80,20 +82,12 @@ public class Imagen {
         this.inventario = inventario;
     }
 
-    public LocalDateTime getCreated_at() {
-        return created_at;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
 }

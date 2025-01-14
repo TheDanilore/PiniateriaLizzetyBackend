@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.danilore.piniateria_lizzety.model.persona.enums.GeneroEnum;
+
 @Entity
 @Table(name = "persona")
 public class Persona {
