@@ -2,11 +2,7 @@ package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
-
 import com.danilore.piniateria_lizzety.model.producto.Producto;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -22,6 +18,10 @@ public class Inventario {
     @JoinColumn(name = "producto_id", referencedColumnName = "id", nullable = false)
     private Producto producto;
 
+    @ManyToOne
+    @JoinColumn(name = "variacion_id", referencedColumnName = "id", nullable = false)
+    private Variacion variacion;
+
     @Column(name = "precio_unitario", nullable = false)
     private BigDecimal precioUnitario;
 
@@ -34,14 +34,11 @@ public class Inventario {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Relación con Variaciones (uno a muchos)
-    @OneToMany(mappedBy = "inventario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private Set<Variaciones> variaciones;
 
-    public Inventario(Long id, Producto producto, BigDecimal precioUnitario, Long cantidad) {
+    public Inventario(Long id, Producto producto, Variacion variacion, BigDecimal precioUnitario, Long cantidad) {
         this.id = id;
         this.producto = producto;
+        this.variacion = variacion;
         this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
     }
@@ -109,11 +106,13 @@ public class Inventario {
         this.updatedAt = updatedAt;
     }
 
-    public Set<Variaciones> getVariaciones() {
-        return variaciones;
+    public Variacion getVariacion() {
+        return variacion;
     }
 
-    public void setVariaciones(Set<Variaciones> variaciones) {
-        this.variaciones = variaciones;
+    public void setVariacion(Variacion variacion) {
+        this.variacion = variacion;
     }
+
+ 
 }

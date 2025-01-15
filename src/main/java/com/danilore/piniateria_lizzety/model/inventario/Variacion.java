@@ -1,20 +1,15 @@
 package com.danilore.piniateria_lizzety.model.inventario;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "variaciones")
-public class Variaciones {
+public class Variacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "inventario_id", referencedColumnName = "id",  nullable = false)
-    @JsonIgnore // Evitar referencia cíclica
-    private Inventario inventario;
 
     @ManyToOne
     @JoinColumn(name = "color_id", referencedColumnName = "id", nullable = false)
@@ -28,23 +23,20 @@ public class Variaciones {
     @JoinColumn(name = "tamano_id", referencedColumnName = "id")
     private Tamano tamano;
 
+    // Relación con Variaciones (uno a muchos)
+    @OneToMany(mappedBy = "variacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<Inventario> inventario;
 
-    public Variaciones(Inventario inventario, Color color, Longitud longitud, Tamano tamano) {
-        this.inventario = inventario;
-        this.color = color;
-        this.longitud = longitud;
-        this.tamano = tamano;
-    }
-
-    public Variaciones(Long id, Inventario inventario, Color color, Longitud longitud, Tamano tamano) {
+    public Variacion(Long id, Color color, Longitud longitud, Tamano tamano, Set<Inventario> inventario) {
         this.id = id;
-        this.inventario = inventario;
         this.color = color;
         this.longitud = longitud;
         this.tamano = tamano;
+        this.inventario = inventario;
     }
 
-    public Variaciones() {
+    public Variacion() {
     }
 
     public Long getId() {
@@ -79,13 +71,14 @@ public class Variaciones {
         this.tamano = tamano;
     }
 
-    public Inventario getInventario() {
+    public Set<Inventario> getInventario() {
         return inventario;
     }
 
-    public void setInventario(Inventario inventario) {
+    public void setInventario(Set<Inventario> inventario) {
         this.inventario = inventario;
     }
 
+    
 
 }

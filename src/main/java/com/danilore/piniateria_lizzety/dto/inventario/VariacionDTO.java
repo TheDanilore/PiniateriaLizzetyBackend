@@ -1,33 +1,26 @@
 package com.danilore.piniateria_lizzety.dto.inventario;
 
-import com.danilore.piniateria_lizzety.model.inventario.Variaciones;
+import com.danilore.piniateria_lizzety.model.inventario.Variacion;
 
-public class VariacionesDTO {
+public class VariacionDTO {
     private Long id;
-    private InventarioDTO inventario;
     private ColorDTO color;
     private LongitudDTO longitud;
     private TamanoDTO tamano;
 
-
-    public VariacionesDTO(Long id, InventarioDTO inventario, ColorDTO color, LongitudDTO longitud, TamanoDTO tamano) {
+    public VariacionDTO(Long id, ColorDTO color, LongitudDTO longitud, TamanoDTO tamano) {
         this.id = id;
-        this.inventario = inventario;
         this.color = color;
         this.longitud = longitud;
         this.tamano = tamano;
     }
 
-    public VariacionesDTO() {
+    public VariacionDTO() {
     }
 
-    public static VariacionesDTO fromEntity(Variaciones variaciones) {
-        VariacionesDTO dto = new VariacionesDTO();
+    public static VariacionDTO fromEntity(Variacion variaciones) {
+        VariacionDTO dto = new VariacionDTO();
         dto.setId(variaciones.getId());
-
-        if (variaciones.getInventario() != null) {
-            dto.setInventario(InventarioDTO.fromEntity(variaciones.getInventario()));
-        }
 
         if (variaciones.getColor() != null) {
             dto.setColor(ColorDTO.fromEntity(variaciones.getColor()));
@@ -44,13 +37,10 @@ public class VariacionesDTO {
         return dto;
     }
 
-    public Variaciones toEntity() {
-        Variaciones variaciones = new Variaciones();
+    public Variacion toEntity() {
+        Variacion variaciones = new Variacion();
         variaciones.setId(this.id);
 
-        if (this.inventario != null) {
-            variaciones.setInventario(this.inventario.toEntity());
-        }
         if (this.color != null) {
             variaciones.setColor(this.color.toEntity());
         }
@@ -94,14 +84,6 @@ public class VariacionesDTO {
 
     public void setTamano(TamanoDTO tamano) {
         this.tamano = tamano;
-    }
-
-    public InventarioDTO getInventario() {
-        return inventario;
-    }
-
-    public void setInventario(InventarioDTO inventario) {
-        this.inventario = inventario;
     }
 
 

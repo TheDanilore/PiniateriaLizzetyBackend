@@ -2,8 +2,6 @@ package com.danilore.piniateria_lizzety.dto.inventario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
 import com.danilore.piniateria_lizzety.dto.producto.ProductoDTO;
 import com.danilore.piniateria_lizzety.model.inventario.Inventario;
 
@@ -11,21 +9,21 @@ public class InventarioDTO {
 
     private Long id;
     private ProductoDTO producto;
+    private VariacionDTO variacion;
     private BigDecimal precioUnitario;
     private Long cantidad;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Set<VariacionesDTO> variaciones;
 
-    public InventarioDTO(Long id, ProductoDTO producto, BigDecimal precioUnitario, Long cantidad,
-            LocalDateTime createdAt, LocalDateTime updatedAt, Set<VariacionesDTO> variaciones) {
+    public InventarioDTO(Long id, ProductoDTO producto, VariacionDTO variacion, BigDecimal precioUnitario,
+            Long cantidad, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.producto = producto;
+        this.variacion = variacion;
         this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.variaciones = variaciones;
     }
 
     public InventarioDTO() {
@@ -39,26 +37,36 @@ public class InventarioDTO {
             dto.setProducto(ProductoDTO.fromEntity(inventario.getProducto()));
         }
 
+        if (inventario.getVariacion() != null) {
+            dto.setVariacion(VariacionDTO.fromEntity(inventario.getVariacion()));
+        }
+
         dto.setPrecioUnitario(inventario.getPrecioUnitario());
         dto.setCantidad(inventario.getCantidad());
         dto.setCreatedAt(inventario.getCreatedAt());
         dto.setUpdatedAt(inventario.getUpdatedAt());
-        dto.setVariaciones(inventario.getVariaciones().stream()
-                .map(VariacionesDTO::fromEntity)
-                .collect(Collectors.toSet()));
         return dto;
     }
 
     public Inventario toEntity() {
         Inventario inventario = new Inventario();
         inventario.setId(this.id);
+        if (this.producto != null) {
+            inventario.setProducto(this.producto.toEntity());
+        }
+
+        if (this.variacion != null) {
+            inventario.setVariacion(this.variacion.toEntity());
+        }
+
         inventario.setPrecioUnitario(this.precioUnitario);
         inventario.setCantidad(this.cantidad);
+        inventario.setCreatedAt(this.createdAt);
+        inventario.setUpdatedAt(this.updatedAt);
+        inventario.setUpdatedAt(this.updatedAt);
         // No añadir variaciones directamente aquí para evitar bucles
         return inventario;
     }
-    
-    
 
     public Long getId() {
         return id;
@@ -108,12 +116,13 @@ public class InventarioDTO {
         this.updatedAt = updatedAt;
     }
 
-    public Set<VariacionesDTO> getVariaciones() {
-        return variaciones;
+    public VariacionDTO getVariacion() {
+        return variacion;
     }
 
-    public void setVariaciones(Set<VariacionesDTO> variaciones) {
-        this.variaciones = variaciones;
+    public void setVariacion(VariacionDTO variacion) {
+        this.variacion = variacion;
     }
+
 
 }

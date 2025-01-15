@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.danilore.piniateria_lizzety.model.inventario.Inventario;
-
 @Repository
 public interface InventarioRepository extends JpaRepository<Inventario, Long> {
 
@@ -15,5 +14,7 @@ public interface InventarioRepository extends JpaRepository<Inventario, Long> {
             "LOWER(i.producto.nombre) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
             "CAST(i.id AS string) LIKE :criterio")
     Page<Inventario> buscarPorCriterio(@Param("criterio") String criterio, Pageable pageable);
+
+    boolean  existsByProductoIdAndVariacionId(Long productoId, Long variacionId);
 
 }
