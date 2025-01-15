@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoEntradaEnum;
 import com.danilore.piniateria_lizzety.model.producto.Proveedor;
+import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 
 import jakarta.persistence.*;
 
@@ -33,6 +34,11 @@ public class EntradaProducto {
     @Column(nullable = false)
     private LocalDate fecha;
 
+    // Un usuario va a estar asociado a un movimiento en especifico
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)
+    private Usuario usuario;
+
     @Column(nullable = false)
     private String observacion;
 
@@ -42,14 +48,17 @@ public class EntradaProducto {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    
+
     public EntradaProducto(Long id, Proveedor proveedor, String guiaRemision, TipoEntradaEnum tipoEntrada,
-            String procedencia, LocalDate fecha, String observacion) {
+            String procedencia, LocalDate fecha, Usuario usuario, String observacion) {
         this.id = id;
         this.proveedor = proveedor;
         this.guiaRemision = guiaRemision;
         this.tipoEntrada = tipoEntrada;
         this.procedencia = procedencia;
         this.fecha = fecha;
+        this.usuario = usuario;
         this.observacion = observacion;
     }
 
@@ -138,6 +147,14 @@ public class EntradaProducto {
 
     public void setProveedor(Proveedor proveedor) {
         this.proveedor = proveedor;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
 }

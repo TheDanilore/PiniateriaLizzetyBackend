@@ -3,6 +3,7 @@ package com.danilore.piniateria_lizzety.dto.inventario;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import com.danilore.piniateria_lizzety.dto.producto.ProveedorDTO;
+import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.model.inventario.EntradaProducto;
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoEntradaEnum;
 
@@ -14,18 +15,21 @@ public class EntradaProductoDTO {
     private TipoEntradaEnum tipoEntrada;
     private String procedencia;
     private LocalDate fecha;
+    private UsuarioDTO usuario;
     private String observacion;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public EntradaProductoDTO(Long id, ProveedorDTO proveedor, String guiaRemision, TipoEntradaEnum tipoEntrada,
-            String procedencia, LocalDate fecha, String observacion, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            String procedencia, LocalDate fecha, UsuarioDTO usuario, String observacion, LocalDateTime createdAt,
+            LocalDateTime updatedAt) {
         this.id = id;
         this.proveedor = proveedor;
         this.guiaRemision = guiaRemision;
         this.tipoEntrada = tipoEntrada;
         this.procedencia = procedencia;
         this.fecha = fecha;
+        this.usuario = usuario;
         this.observacion = observacion;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -47,6 +51,9 @@ public class EntradaProductoDTO {
         dto.setProcedencia(entradaProducto.getProcedencia());
         dto.setFecha(entradaProducto.getFecha());
         dto.setObservacion(entradaProducto.getObservacion());
+        if (entradaProducto.getUsuario() != null) {
+            dto.setUsuario(UsuarioDTO.fromEntity(entradaProducto.getUsuario()));
+        }
         dto.setCreatedAt(entradaProducto.getCreatedAt());
         dto.setUpdatedAt(entradaProducto.getUpdatedAt());
         return dto;
@@ -63,6 +70,11 @@ public class EntradaProductoDTO {
         entradaProducto.setTipoEntrada(this.tipoEntrada);
         entradaProducto.setProcedencia(this.procedencia);
         entradaProducto.setFecha(this.fecha);
+
+        if (this.usuario != null) {
+            entradaProducto.setUsuario(this.usuario.toEntity());
+        }
+
         entradaProducto.setObservacion(this.observacion);
         entradaProducto.setCreatedAt(this.createdAt);
         entradaProducto.setUpdatedAt(this.updatedAt);
@@ -141,8 +153,14 @@ public class EntradaProductoDTO {
         this.updatedAt = updatedAt;
     }
 
+    public UsuarioDTO getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDTO usuario) {
+        this.usuario = usuario;
+    }
+
     // getters and setters
-
-
 
 }

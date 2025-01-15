@@ -1,5 +1,7 @@
 package com.danilore.piniateria_lizzety.repository.inventario;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +19,13 @@ public interface InventarioRepository extends JpaRepository<Inventario, Long> {
 
     boolean  existsByProductoIdAndVariacionId(Long productoId, Long variacionId);
 
+    @Query("SELECT i FROM Inventario i WHERE i.producto.id = :productoId " +
+            "AND i.variacion.color.id = :colorId " +
+            "AND i.variacion.longitud.id = :longitudId " +
+            "AND i.variacion.tamano.id = :tamanoId")
+    Optional<Inventario> findByProductoIdAndVariacion(
+            @Param("productoId") Long productoId,
+            @Param("colorId") Long colorId,
+            @Param("longitudId") Long longitudId,
+            @Param("tamanoId") Long tamanoId);
 }

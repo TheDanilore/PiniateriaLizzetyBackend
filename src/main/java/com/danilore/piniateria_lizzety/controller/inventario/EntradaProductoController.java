@@ -1,7 +1,12 @@
 package com.danilore.piniateria_lizzety.controller.inventario;
 
 import com.danilore.piniateria_lizzety.dto.inventario.EntradaProductoDTO;
+import com.danilore.piniateria_lizzety.dto.inventario.EntradaProductoRequest;
+import com.danilore.piniateria_lizzety.dto.inventario.ItemEntradaDTO;
 import com.danilore.piniateria_lizzety.service.inventario.EntradaProductoService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +28,18 @@ public class EntradaProductoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntradaProductoDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(entradaProductoService.getById(id));    
+        return ResponseEntity.ok(entradaProductoService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<EntradaProductoDTO> save(@RequestBody EntradaProductoDTO entradaProductoDTO) {
-        return ResponseEntity.ok(entradaProductoService.save(entradaProductoDTO));
+    public ResponseEntity<EntradaProductoDTO> save(@RequestBody EntradaProductoRequest request) {
+        return ResponseEntity
+                .ok(entradaProductoService.save(request.getEntradaProductoDTO(), request.getItemsEntradaDTO()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntradaProductoDTO> update(@PathVariable Long id, @RequestBody EntradaProductoDTO entradaProductoDTO) {
+    public ResponseEntity<EntradaProductoDTO> update(@PathVariable Long id,
+            @RequestBody EntradaProductoDTO entradaProductoDTO) {
         return ResponseEntity.ok(entradaProductoService.update(id, entradaProductoDTO));
     }
 
@@ -49,6 +56,5 @@ public class EntradaProductoController {
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(entradaProductoService.buscarPorCriterio(criterio, page, size));
     }
-
 
 }

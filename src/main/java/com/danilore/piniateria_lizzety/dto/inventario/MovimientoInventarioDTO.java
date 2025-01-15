@@ -15,12 +15,12 @@ public class MovimientoInventarioDTO {
     private Long cantidadActual;
     private UsuarioDTO usuario;
     private String observacion;
-    private String fecha;
+    private LocalDateTime fecha;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public MovimientoInventarioDTO(Long id, InventarioDTO inventario, TipoMovimientoEnum tipoMovimiento, Long cantidad,
-            Long cantidadAnterior, Long cantidadActual, UsuarioDTO usuario, String observacion, String fecha,
+            Long cantidadAnterior, Long cantidadActual, UsuarioDTO usuario, String observacion, LocalDateTime fecha,
             LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.inventario = inventario;
@@ -133,22 +133,12 @@ public class MovimientoInventarioDTO {
         this.cantidadActual = cantidadActual;
     }
 
-
-
     public String getObservacion() {
         return observacion;
     }
 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
-    }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -175,7 +165,14 @@ public class MovimientoInventarioDTO {
         this.usuario = usuario;
     }
 
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
+    }
+
     // getters and setters
 
-    
 }

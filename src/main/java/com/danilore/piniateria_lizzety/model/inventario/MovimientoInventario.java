@@ -41,7 +41,7 @@ public class MovimientoInventario {
     private String observacion;
 
     @Column(nullable = false)
-    private String fecha;
+    private LocalDateTime fecha;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -50,7 +50,7 @@ public class MovimientoInventario {
     private LocalDateTime updatedAt;
 
     public MovimientoInventario(Long id, Inventario inventario, TipoMovimientoEnum tipoMovimiento, Long cantidad,
-            Long cantidadAnterior, Long cantidadActual, Usuario usuario, String observacion, String fecha) {
+            Long cantidadAnterior, Long cantidadActual, Usuario usuario, String observacion, LocalDateTime fecha) {
         this.id = id;
         this.inventario = inventario;
         this.tipoMovimiento = tipoMovimiento;
@@ -74,8 +74,8 @@ public class MovimientoInventario {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-    
-    //getters and setters
+
+    // getters and setters
 
     public Long getId() {
         return id;
@@ -141,11 +141,11 @@ public class MovimientoInventario {
         this.observacion = observacion;
     }
 
-    public String getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
