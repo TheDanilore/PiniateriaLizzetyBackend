@@ -2,7 +2,7 @@ package com.danilore.piniateria_lizzety.dto.usuario;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
@@ -14,14 +14,12 @@ public class UsuarioDTO {
     private String password; // Incluye la contraseña encriptada
     private String avatar;
     private EstadoEnum estado;
-    private List<RolDTO> roles; // Cambiar a Set<RolDTO> si prefieres conjuntos
+    private Set<RolDTO> roles = new HashSet<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-
-
     public UsuarioDTO(Long id, String nombre, String email, String password, String avatar, EstadoEnum estado,
-            List<RolDTO> roles, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            Set<RolDTO> roles, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
@@ -49,7 +47,7 @@ public class UsuarioDTO {
         dto.setUpdatedAt(usuario.getUpdatedAt());
         dto.setRoles(usuario.getRoles().stream()
                 .map(RolDTO::fromEntity)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toSet()));
         return dto;
     }
 
@@ -97,22 +95,6 @@ public class UsuarioDTO {
         this.email = email;
     }
 
-    public EstadoEnum getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoEnum estado) {
-        this.estado = estado;
-    }
-
-    public List<RolDTO> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<RolDTO> roles) {
-        this.roles = roles;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -127,6 +109,22 @@ public class UsuarioDTO {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public EstadoEnum getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoEnum estado) {
+        this.estado = estado;
+    }
+
+    public Set<RolDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RolDTO> roles) {
+        this.roles = roles;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -144,5 +142,9 @@ public class UsuarioDTO {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+   
+
+    
 
 }

@@ -6,10 +6,8 @@ import com.danilore.piniateria_lizzety.model.usuario.Rol;
 import com.danilore.piniateria_lizzety.service.usuario.RolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.HashSet;
 
 @RestController
 @RequestMapping("/api/roles")
@@ -19,41 +17,26 @@ public class RolController {
     private RolService rolService;
 
     @GetMapping
-    public Page<RolDTO> listarTodos(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<RolDTO>> getAll(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return rolService.listarTodos(pageable).map(RolDTO::fromEntity);
+        return ResponseEntity.ok(rolService.getAll(page, size));
     }
 
     @GetMapping("/{id}")
-    public RolDTO buscarPorId(@PathVariable int id) {
-        Rol rol = rolService.buscarPorId(id);
-        return RolDTO.fromEntity(rol); // Convertir Usuario a UsuarioDTO
+    public ResponseEntity<RolDTO> getById(@PathVariable int id) {
+        return ResponseEntity.ok(rolService.getById(id));
     }
 
     @PostMapping
-    public RolDTO guardar(@RequestBody RolDTO rolDTO) {
-        Rol rol = rolDTO.toEntity(); // Convertir RolDTO a Rol
-        // Si no se envían permisos, asignar una lista vacía
-        if (rol.getPermisos() == null || rol.getPermisos().isEmpty()) {
-            rol.setPermisos(new HashSet<>());
-        }
-
-        Rol rolGuardado = rolService.guardar(rol);
-        return RolDTO.fromEntity(rolGuardado); // Convertir Rol a RolDTO
+    public ResponseEntity<RolDTO> save(@RequestBody RolDTO rolDTO) {
+        return ResponseEntity.ok(rolService.save(rolDTO));
     }
 
     // Editar un usuario existente
     @PutMapping("/editar/{id}")
-    public RolDTO editar(@PathVariable int id, @RequestBody RolDTO rolDTO) {
-        Rol rol = rolDTO.toEntity(); // Convertir RolDTO a Rol
-        // Manejar el caso de permisos nulos o vacíos
-        if (rol.getPermisos() == null || rol.getPermisos().isEmpty()) {
-            rol.setPermisos(new HashSet<>());
-        }
-
-        Rol rolEditado = rolService.editar(id, rol);
-        return RolDTO.fromEntity(rolEditado); // Convertir Rol a RolDTO
+    public ResponseEntity<RolDTO> update(@PathVariable int id,
+            @RequestBody RolDTO rolDTO) {
+        return ResponseEntity.ok(rolService.update(id, rolDTO));
     }
 
     @PatchMapping("/cambiar-estado/{id}")
@@ -63,14 +46,22 @@ public class RolController {
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarPorId(@PathVariable int id) {
-        rolService.eliminarPorId(id);
+    public void deleteById(@PathVariable int id) {
+        rolService.deleteById(id);
     }
 
     @GetMapping("/buscar-descripcion")
-    public RolDTO buscarPorDescripcion(@RequestParam String descripcion) {
-        Rol rol = rolService.buscarPorDescripcion(descripcion);
-        return RolDTO.fromEntity(rol); // Convertir Usuario a UsuarioDTO
+    public ResponseEntity<RolDTO> getByDescripcion(@RequestParam String descripcion) {
+        return ResponseEntity.ok(rolService.getByDescripcion(descripcion));
+    }
+
+    // Listar usarios por nombres o email o id
+    @GetMapping("/buscar")
+    public ResponseEntity<Page<RolDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(rolService.buscarPorCriterio(criterio, page, size));
     }
 
 }

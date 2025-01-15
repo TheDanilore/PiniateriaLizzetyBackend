@@ -1,13 +1,14 @@
 package com.danilore.piniateria_lizzety.service.producto;
 
 import com.danilore.piniateria_lizzety.dto.producto.CategoriaProductoDTO;
-import com.danilore.piniateria_lizzety.exception.ResourceNotFoundException;
+import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.producto.CategoriaProducto;
 import com.danilore.piniateria_lizzety.repository.producto.CategoriaProductoRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,37 +17,55 @@ public class CategoriaProductoService {
     @Autowired
     private CategoriaProductoRepository categoriaProductoRepository;
 
-    public Page<CategoriaProductoDTO> listarTodos(Pageable pageable) {
-        return categoriaProductoRepository.findAll(pageable).map(CategoriaProductoDTO::fromEntity);
+    public Page<CategoriaProductoDTO> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CategoriaProducto> categoriaPage = categoriaProductoRepository.findAll(pageable);
+
+        return categoriaPage.map(CategoriaProductoDTO::fromEntity);
     }
 
-    public CategoriaProductoDTO buscarPorId(Long id) {
+    public CategoriaProductoDTO getById(Long id) {
         CategoriaProducto categoriaProducto = categoriaProductoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría de producto no encontrada con ID: " + id));
+                .orElseThrow(() -> new DAOException("Categoría de producto no encontrada con ID: " + id));
         return CategoriaProductoDTO.fromEntity(categoriaProducto);
     }
 
-    public CategoriaProductoDTO guardar(CategoriaProductoDTO categoriaProductoDTO) {
+    public CategoriaProductoDTO save(CategoriaProductoDTO categoriaProductoDTO) {
         CategoriaProducto categoriaProducto = categoriaProductoDTO.toEntity();
-        CategoriaProducto categoriaGuardada = categoriaProductoRepository.save(categoriaProducto);
-        return CategoriaProductoDTO.fromEntity(categoriaGuardada);
+
+        if (categoriaProductoRepository.findByDescripcion(categoriaProducto.getDescripcion()).isPresent()) {
+            throw new DAOException("La descripción ya está registrado.");
+        }
+
+        CategoriaProducto savedCategoria = categoriaProductoRepository.save(categoriaProducto);
+        return CategoriaProductoDTO.fromEntity(savedCategoria);
     }
 
-    public CategoriaProductoDTO editar(Long id, CategoriaProductoDTO categoriaProductoDTO) {
+    public CategoriaProductoDTO update(Long id, CategoriaProductoDTO categoriaProductoDTO) {
+        CategoriaProducto categoriaActualizado = categoriaProductoDTO.toEntity();
+        
         CategoriaProducto categoriaExistente = categoriaProductoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría de producto no encontrada con ID: " + id));
+                .orElseThrow(() -> new DAOException("Categoría de producto no encontrada con ID: " + id));
 
-        categoriaExistente.setDescripcion(categoriaProductoDTO.getDescripcion());
-        categoriaExistente.setUpdatedAt(categoriaProductoDTO.getUpdatedAt());
+        categoriaExistente.setDescripcion(categoriaActualizado.getDescripcion());
 
-        CategoriaProducto categoriaEditada = categoriaProductoRepository.save(categoriaExistente);
-        return CategoriaProductoDTO.fromEntity(categoriaEditada);
+        return CategoriaProductoDTO.fromEntity(categoriaProductoRepository.save(categoriaExistente));
     }
 
-    public void eliminar(Long id) {
+    public void deleteById(Long id) {
         if (!categoriaProductoRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Categoría de producto no encontrada con ID: " + id);
+            throw new DAOException("Categoría de producto no encontrada con ID: " + id);
         }
         categoriaProductoRepository.deleteById(id);
+    }
+
+        // Listar por ruc,razon social o ID
+    public Page<CategoriaProductoDTO> buscarPorCriterio(String criterio, int page, int size) {
+        if (criterio == null || criterio.isBlank()) {
+            throw new DAOException("El criterio de búsqueda no puede estar vacío");
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by("descripcion").ascending());
+        Page<CategoriaProducto> proveedorPage = categoriaProductoRepository.buscarPorCriterio(criterio, pageable);
+        return proveedorPage.map(CategoriaProductoDTO::fromEntity);
     }
 }

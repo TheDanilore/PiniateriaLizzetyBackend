@@ -12,41 +12,42 @@ import org.springframework.web.bind.annotation.*;
 public class EntradaProductoController {
 
     @Autowired
-    private final EntradaProductoService entradaProductoService;
-
-    public EntradaProductoController(EntradaProductoService entradaProductoService) {
-        this.entradaProductoService = entradaProductoService;
-    }
+    private EntradaProductoService entradaProductoService;
 
     @GetMapping
     public ResponseEntity<Page<EntradaProductoDTO>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<EntradaProductoDTO> pageResult = entradaProductoService.findAll(page, size);
-        return ResponseEntity.ok(pageResult);
+        return ResponseEntity.ok(entradaProductoService.getAll(page, size));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntradaProductoDTO> getById(@PathVariable Long id) {
-        EntradaProductoDTO dto = entradaProductoService.findById(id);
-        return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(entradaProductoService.getById(id));    
     }
 
     @PostMapping
-    public ResponseEntity<EntradaProductoDTO> create(@RequestBody EntradaProductoDTO dto) {
-        EntradaProductoDTO createdDto = entradaProductoService.create(dto);
-        return ResponseEntity.ok(createdDto);
+    public ResponseEntity<EntradaProductoDTO> save(@RequestBody EntradaProductoDTO entradaProductoDTO) {
+        return ResponseEntity.ok(entradaProductoService.save(entradaProductoDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntradaProductoDTO> update(@PathVariable Long id, @RequestBody EntradaProductoDTO dto) {
-        EntradaProductoDTO updatedDto = entradaProductoService.update(id, dto);
-        return updatedDto != null ? ResponseEntity.ok(updatedDto) : ResponseEntity.notFound().build();
+    public ResponseEntity<EntradaProductoDTO> update(@PathVariable Long id, @RequestBody EntradaProductoDTO entradaProductoDTO) {
+        return ResponseEntity.ok(entradaProductoService.update(id, entradaProductoDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        entradaProductoService.delete(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        entradaProductoService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    public ResponseEntity<Page<EntradaProductoDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(entradaProductoService.buscarPorCriterio(criterio, page, size));
+    }
+
+
 }

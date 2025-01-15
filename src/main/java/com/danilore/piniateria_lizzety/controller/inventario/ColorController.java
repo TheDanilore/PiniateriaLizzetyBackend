@@ -3,6 +3,7 @@ package com.danilore.piniateria_lizzety.controller.inventario;
 import com.danilore.piniateria_lizzety.dto.inventario.ColorDTO;
 import com.danilore.piniateria_lizzety.service.inventario.ColorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,34 +12,40 @@ import org.springframework.web.bind.annotation.*;
 public class ColorController {
 
     @Autowired
-    private final ColorService colorService;
+    private ColorService colorService;
 
-    public ColorController(ColorService colorService) {
-        this.colorService = colorService;
+    @GetMapping
+    public ResponseEntity<Page<ColorDTO>> getAll(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(colorService.getAll(page, size));
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<ColorDTO> getColorById(@PathVariable Long id) {
-        ColorDTO colorDTO = colorService.findById(id);
-        return colorDTO != null ? ResponseEntity.ok(colorDTO) : ResponseEntity.notFound().build();
+    public ResponseEntity<ColorDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(colorService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ColorDTO> createColor(@RequestBody ColorDTO colorDTO) {
-        ColorDTO createdColor = colorService.create(colorDTO);
-        return ResponseEntity.ok(createdColor);
+    public ResponseEntity<ColorDTO> save(@RequestBody ColorDTO colorDTO) {
+        return ResponseEntity.ok(colorService.save(colorDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ColorDTO> updateColor(@PathVariable Long id, @RequestBody ColorDTO colorDTO) {
-        ColorDTO updatedColor = colorService.update(id, colorDTO);
-        return updatedColor != null ? ResponseEntity.ok(updatedColor) : ResponseEntity.notFound().build();
+    public ResponseEntity<ColorDTO> update(@PathVariable Long id, @RequestBody ColorDTO colorDTO) {
+        return ResponseEntity.ok(colorService.update(id, colorDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteColor(@PathVariable Long id) {
-        colorService.delete(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        colorService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    public ResponseEntity<Page<ColorDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(colorService.buscarPorCriterio(criterio, page, size));
+    }
+
 }

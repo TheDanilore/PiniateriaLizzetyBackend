@@ -3,9 +3,8 @@ package com.danilore.piniateria_lizzety.controller.persona;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.danilore.piniateria_lizzety.dto.persona.ProvinciaDTO;
 import com.danilore.piniateria_lizzety.model.persona.Provincia;
 import com.danilore.piniateria_lizzety.service.persona.ProvinciaService;
@@ -18,10 +17,9 @@ public class ProvinciaController {
     private ProvinciaService provinciaService;
 
     @GetMapping
-    public Page<ProvinciaDTO> listarTodos(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return provinciaService.listarTodos(pageable).map(ProvinciaDTO::fromEntity);
+    public ResponseEntity<Page<ProvinciaDTO>> getAll(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(provinciaService.getAll(page, size));
     }
 
     @GetMapping("/departamento/{id}")
@@ -33,28 +31,25 @@ public class ProvinciaController {
     }
 
     @GetMapping("/{id}")
-    public ProvinciaDTO buscarPorId(@PathVariable Integer id) {
-        Provincia provincia = provinciaService.buscarPorId(id);
-        return ProvinciaDTO.fromEntity(provincia);
+    public ResponseEntity<ProvinciaDTO> getById(@PathVariable int id) {
+        return ResponseEntity.ok(provinciaService.getById(id));
     }
 
     @PostMapping
-    public ProvinciaDTO guardar(@RequestBody ProvinciaDTO provinciaDTO) {
-        Provincia provincia = provinciaDTO.toEntity();
-        Provincia provinciaGuardada = provinciaService.guardar(provincia);
-        return ProvinciaDTO.fromEntity(provinciaGuardada);
+    public ResponseEntity<ProvinciaDTO> save(@RequestBody ProvinciaDTO provinciaDTO) {
+        return ResponseEntity.ok(provinciaService.save(provinciaDTO));
     }
 
     @PutMapping("/editar/{id}")
-    public ProvinciaDTO editar(@PathVariable Integer id, @RequestBody ProvinciaDTO provinciaDTO) {
-        Provincia provincia = provinciaDTO.toEntity();
-        Provincia provinciaEditada = provinciaService.editar(id, provincia);
-        return ProvinciaDTO.fromEntity(provinciaEditada);
+    public ResponseEntity<ProvinciaDTO> update(@PathVariable int id,
+            @RequestBody ProvinciaDTO provinciaDTO) {
+        return ResponseEntity.ok(provinciaService.update(id, provinciaDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarPorId(@PathVariable Integer id) {
-        provinciaService.eliminar(id);
+    public ResponseEntity<Void> deleteById(@PathVariable int id) {
+        provinciaService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/descripcion/{descripcion}")
@@ -63,4 +58,10 @@ public class ProvinciaController {
         return ProvinciaDTO.fromEntity(provincia);
     }
 
+    public ResponseEntity<Page<ProvinciaDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(provinciaService.buscarPorCriterio(criterio, page, size));
+    }
 }

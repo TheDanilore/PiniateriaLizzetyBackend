@@ -2,11 +2,8 @@ package com.danilore.piniateria_lizzety.controller.producto;
 
 import com.danilore.piniateria_lizzety.dto.producto.ProveedorDTO;
 import com.danilore.piniateria_lizzety.service.producto.ProveedorService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,32 +15,37 @@ public class ProveedorController {
     private ProveedorService proveedorService;
 
     @GetMapping
-    public ResponseEntity<Page<ProveedorDTO>> listarTodos(
+    public ResponseEntity<Page<ProveedorDTO>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(proveedorService.listarTodos(pageable));
+        return ResponseEntity.ok(proveedorService.getAll(page, size));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProveedorDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(proveedorService.buscarPorId(id));
+    public ResponseEntity<ProveedorDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(proveedorService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ProveedorDTO> guardar(@RequestBody ProveedorDTO proveedorDTO) {
-        return ResponseEntity.ok(proveedorService.guardar(proveedorDTO));
+    public ResponseEntity<ProveedorDTO> save(@RequestBody ProveedorDTO proveedorDTO) {
+        return ResponseEntity.ok(proveedorService.save(proveedorDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProveedorDTO> editar(@PathVariable Long id, @RequestBody ProveedorDTO proveedorDTO) {
-        return ResponseEntity.ok(proveedorService.editar(id, proveedorDTO));
+    public ResponseEntity<ProveedorDTO> update(@PathVariable Long id, @RequestBody ProveedorDTO proveedorDTO) {
+        return ResponseEntity.ok(proveedorService.update(id, proveedorDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        proveedorService.eliminar(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        proveedorService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-}
 
+    public ResponseEntity<Page<ProveedorDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(proveedorService.buscarPorCriterio(criterio, page, size));
+    }
+}

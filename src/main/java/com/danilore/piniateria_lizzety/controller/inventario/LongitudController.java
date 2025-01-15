@@ -3,10 +3,9 @@ package com.danilore.piniateria_lizzety.controller.inventario;
 import com.danilore.piniateria_lizzety.dto.inventario.LongitudDTO;
 import com.danilore.piniateria_lizzety.service.inventario.LongitudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/longitudes")
@@ -16,34 +15,37 @@ public class LongitudController {
     private LongitudService longitudService;
 
     @GetMapping
-    public ResponseEntity<List<LongitudDTO>> getAll(
-            @RequestParam(defaultValue = "0") int page, 
+    public ResponseEntity<Page<LongitudDTO>> getAll(
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        var pageResult = longitudService.findAll(page, size);
-        return ResponseEntity.ok(pageResult.getContent());
+        return ResponseEntity.ok(longitudService.getAll(page, size));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LongitudDTO> getById(@PathVariable Long id) {
-        LongitudDTO dto = longitudService.findById(id);
-        return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(longitudService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<LongitudDTO> create(@RequestBody LongitudDTO dto) {
-        LongitudDTO createdDto = longitudService.create(dto);
-        return ResponseEntity.ok(createdDto);
+    public ResponseEntity<LongitudDTO> save(@RequestBody LongitudDTO longitudDTO) {
+        return ResponseEntity.ok(longitudService.save(longitudDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LongitudDTO> update(@PathVariable Long id, @RequestBody LongitudDTO dto) {
-        LongitudDTO updatedDto = longitudService.update(id, dto);
-        return updatedDto != null ? ResponseEntity.ok(updatedDto) : ResponseEntity.notFound().build();
+    public ResponseEntity<LongitudDTO> update(@PathVariable Long id, @RequestBody LongitudDTO longitudDTO) {
+        return ResponseEntity.ok(longitudService.update(id, longitudDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        longitudService.delete(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        longitudService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    public ResponseEntity<Page<LongitudDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(longitudService.buscarPorCriterio(criterio, page, size));
     }
 }

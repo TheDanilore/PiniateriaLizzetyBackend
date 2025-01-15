@@ -12,41 +12,40 @@ import org.springframework.web.bind.annotation.*;
 public class InventarioController {
 
     @Autowired
-    private final InventarioService inventarioService;
-
-    public InventarioController(InventarioService inventarioService) {
-        this.inventarioService = inventarioService;
-    }
+    private InventarioService inventarioService;
 
     @GetMapping
     public ResponseEntity<Page<InventarioDTO>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<InventarioDTO> pageResult = inventarioService.findAll(page, size);
-        return ResponseEntity.ok(pageResult);
+        return ResponseEntity.ok(inventarioService.getAll(page, size));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<InventarioDTO> getById(@PathVariable Long id) {
-        InventarioDTO dto = inventarioService.findById(id);
-        return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(inventarioService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<InventarioDTO> create(@RequestBody InventarioDTO dto) {
-        InventarioDTO createdDto = inventarioService.create(dto);
-        return ResponseEntity.ok(createdDto);
+    public ResponseEntity<InventarioDTO> save(@RequestBody InventarioDTO inventarioDTO) {
+        return ResponseEntity.ok(inventarioService.save(inventarioDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InventarioDTO> update(@PathVariable Long id, @RequestBody InventarioDTO dto) {
-        InventarioDTO updatedDto = inventarioService.update(id, dto);
-        return updatedDto != null ? ResponseEntity.ok(updatedDto) : ResponseEntity.notFound().build();
+    public ResponseEntity<InventarioDTO> update(@PathVariable Long id, @RequestBody InventarioDTO inventarioDTO) {
+        return ResponseEntity.ok(inventarioService.update(id, inventarioDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        inventarioService.delete(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        inventarioService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    public ResponseEntity<Page<InventarioDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(inventarioService.buscarPorCriterio(criterio, page, size));
     }
 }

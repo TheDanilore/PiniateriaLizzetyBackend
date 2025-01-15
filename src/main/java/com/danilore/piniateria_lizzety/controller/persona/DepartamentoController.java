@@ -2,10 +2,8 @@ package com.danilore.piniateria_lizzety.controller.persona;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.danilore.piniateria_lizzety.dto.persona.DepartamentoDTO;
 import com.danilore.piniateria_lizzety.model.persona.Departamento;
 import com.danilore.piniateria_lizzety.service.persona.DepartamentoService;
@@ -18,41 +16,44 @@ public class DepartamentoController {
     private DepartamentoService departamentoService;
 
     @GetMapping
-    public Page<DepartamentoDTO> listarTodos(@RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "30") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return departamentoService.listarTodos(pageable).map(DepartamentoDTO::fromEntity);
+    public ResponseEntity<Page<DepartamentoDTO>> getAll(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(departamentoService.getAll(page, size));
     }
 
     @GetMapping("/{id}")
-    public DepartamentoDTO buscarPorId(@PathVariable Integer id) {
-        Departamento departamento = departamentoService.buscarPorId(id);
-        return DepartamentoDTO.fromEntity(departamento);
+    public ResponseEntity<DepartamentoDTO> getById(@PathVariable int id) {
+        return ResponseEntity.ok(departamentoService.getById(id));
     }
 
     @PostMapping
-    public DepartamentoDTO guardar(@RequestBody DepartamentoDTO departamentoDTO) {
-        Departamento departamento = departamentoDTO.toEntity();
-        Departamento departamentoGuardado = departamentoService.guardar(departamento);
-        return DepartamentoDTO.fromEntity(departamentoGuardado);
+    public ResponseEntity<DepartamentoDTO> save(@RequestBody DepartamentoDTO departamentoDTO) {
+        return ResponseEntity.ok(departamentoService.save(departamentoDTO));
     }
 
     @PutMapping("/editar/{id}")
-    public DepartamentoDTO editar(@PathVariable Integer id, @RequestBody DepartamentoDTO departamentoDTO) {
-        Departamento departamento = departamentoDTO.toEntity();
-        Departamento departamentoEditado = departamentoService.editar(id, departamento);
-        return DepartamentoDTO.fromEntity(departamentoEditado);
+    public ResponseEntity<DepartamentoDTO> update(@PathVariable int id,
+            @RequestBody DepartamentoDTO departamentoDTO) {
+        return ResponseEntity.ok(departamentoService.update(id, departamentoDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarPorId(@PathVariable Integer id) {
-        departamentoService.eliminar(id);
+    public ResponseEntity<Void> deleteById(@PathVariable int id) {
+        departamentoService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/descripcion/{descripcion}")
     public DepartamentoDTO buscarPorDescripcion(@PathVariable String descripcion) {
         Departamento departamento = departamentoService.buscarPorDescripcion(descripcion);
         return DepartamentoDTO.fromEntity(departamento);
+    }
+
+    public ResponseEntity<Page<DepartamentoDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(departamentoService.buscarPorCriterio(criterio, page, size));
     }
 
 }

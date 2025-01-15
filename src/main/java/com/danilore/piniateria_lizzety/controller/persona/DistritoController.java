@@ -3,13 +3,10 @@ package com.danilore.piniateria_lizzety.controller.persona;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-
 import com.danilore.piniateria_lizzety.dto.persona.DistritoDTO;
-import com.danilore.piniateria_lizzety.model.persona.Distrito;
 import com.danilore.piniateria_lizzety.service.persona.DistritoService;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/distritos")
@@ -19,10 +16,9 @@ public class DistritoController {
     private DistritoService distritoService;
 
     @GetMapping
-    public Page<DistritoDTO> listarTodos(@RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "20") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return distritoService.listarTodos(pageable).map(DistritoDTO::fromEntity);
+    public ResponseEntity<Page<DistritoDTO>> getAll(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(distritoService.getAll(page, size));
     }
 
     @GetMapping("/provincia/{id}")
@@ -34,27 +30,25 @@ public class DistritoController {
     }
 
     @GetMapping("/{id}")
-    public DistritoDTO buscarPorId(@PathVariable Integer id) {
-        return DistritoDTO.fromEntity(distritoService.buscarPorId(id));
+    public ResponseEntity<DistritoDTO> getById(@PathVariable int id) {
+        return ResponseEntity.ok(distritoService.getById(id));
     }
 
     @PostMapping
-    public DistritoDTO guardar(@RequestBody DistritoDTO distritoDTO) {
-        Distrito distrito = distritoDTO.toEntity();
-        Distrito distritoGuardado = distritoService.guardar(distrito);
-        return DistritoDTO.fromEntity(distritoGuardado);
+    public ResponseEntity<DistritoDTO> save(@RequestBody DistritoDTO distritoDTO) {
+        return ResponseEntity.ok(distritoService.save(distritoDTO));
     }
 
     @PutMapping("/editar/{id}")
-    public DistritoDTO editar(@PathVariable Integer id, @RequestBody DistritoDTO distritoDTO) {
-        Distrito distrito = distritoDTO.toEntity();
-        Distrito distritoEditado = distritoService.editar(id, distrito);
-        return DistritoDTO.fromEntity(distritoEditado);
+    public ResponseEntity<DistritoDTO> update(@PathVariable int id,
+            @RequestBody DistritoDTO distritoDTO) {
+        return ResponseEntity.ok(distritoService.update(id, distritoDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarPorId(@PathVariable Integer id) {
-        distritoService.eliminar(id);
+    public ResponseEntity<Void> deleteById(@PathVariable int id) {
+        distritoService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/descripcion/{descripcion}")
@@ -62,4 +56,10 @@ public class DistritoController {
         return DistritoDTO.fromEntity(distritoService.buscarPorDescripcion(descripcion));
     }
 
+    public ResponseEntity<Page<DistritoDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(distritoService.buscarPorCriterio(criterio, page, size));
+    }
 }

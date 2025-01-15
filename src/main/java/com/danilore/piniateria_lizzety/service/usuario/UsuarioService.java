@@ -1,15 +1,18 @@
 package com.danilore.piniateria_lizzety.service.usuario;
 
+import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.repository.usuario.UsuarioRepository;
+import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import java.util.HashSet;
 
 @Service
 public class UsuarioService {
@@ -37,16 +40,27 @@ public class UsuarioService {
     }
 
     // Listar todos los usuarios
-    public Page<Usuario> listarTodos(Pageable pageable) {
-        return usuarioRepository.findAll(pageable);
+
+    public Page<UsuarioDTO> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Usuario> usuarioPage = usuarioRepository.findAll(pageable);
+
+        return usuarioPage.map(UsuarioDTO::fromEntity);
+    }
+
+    public UsuarioDTO getById(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        return UsuarioDTO.fromEntity(usuario);
     }
 
     // Guardar un nuevo usuario
-    public Usuario guardar(Usuario usuario) {
+    public UsuarioDTO save(UsuarioDTO usuarioDTO) {
+        Usuario usuario = usuarioDTO.toEntity();
+
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
             throw new DAOException("El email ya está registrado.");
         }
-
         if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
             throw new DAOException("La contraseña es obligatoria.");
         }
@@ -59,13 +73,17 @@ public class UsuarioService {
         // Encriptar la contraseña
         usuario.setPassword(BCrypt.hashpw(usuario.getPassword(), BCrypt.gensalt()));
         usuario.setEstado(EstadoEnum.ACTIVO); // Estado por defecto
-        return usuarioRepository.save(usuario);
+
+        Usuario savedUsuario = usuarioRepository.save(usuario);
+        return UsuarioDTO.fromEntity(savedUsuario);
     }
 
-    // Editar un usuario existente
-    public Usuario editar(Long id, Usuario usuarioActualizado) {
+    public UsuarioDTO update(Long id, UsuarioDTO usuarioDTO) {
+        // Convertir el DTO en una entidad Usuario
+        Usuario usuarioActualizado = usuarioDTO.toEntity();
+
         Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new DAOException("Usuario no encontrado"));
+                .orElseThrow(() -> new DAOException("Usuario no encontrado con ID: " + id));
 
         usuarioExistente.setNombre(usuarioActualizado.getNombre());
         usuarioExistente.setEmail(usuarioActualizado.getEmail());
@@ -76,26 +94,21 @@ public class UsuarioService {
         usuarioExistente
                 .setRoles(usuarioActualizado.getRoles() != null ? usuarioActualizado.getRoles() : new HashSet<>());
 
-        return usuarioRepository.save(usuarioExistente);
-    }
-
-    // Buscar usuario por ID
-    public Usuario buscarPorId(Long id) {
-        return usuarioRepository.findById(id)
-                .orElseThrow(() -> new DAOException("Usuario no encontrado"));
+        // Convertir la entidad actualizada nuevamente a DTO y devolverla
+        return UsuarioDTO.fromEntity(usuarioRepository.save(usuarioExistente));
     }
 
     // Cambiar el estado de un usuario
     public Usuario cambiarEstado(Long id, EstadoEnum nuevoEstado) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new DAOException("Usuario no encontrado"));
+                .orElseThrow(() -> new DAOException("Usuario no encontrado con el ID: " + id));
 
         usuario.setEstado(nuevoEstado);
         return usuarioRepository.save(usuario);
     }
 
     // Eliminar usuario por ID
-    public void eliminarPorId(Long id) {
+    public void deleteById(Long id) {
         if (!usuarioRepository.existsById(id)) {
             throw new DAOException("Usuario no encontrado");
         }
@@ -109,10 +122,12 @@ public class UsuarioService {
     }
 
     // Listar usuario por nombre, email o ID
-    public Page<Usuario> buscarPorCriterio(String criterio, Pageable pageable) {
+    public Page<UsuarioDTO> buscarPorCriterio(String criterio, int page, int size) {
         if (criterio == null || criterio.isBlank()) {
             throw new IllegalArgumentException("El criterio de búsqueda no puede estar vacío");
         }
-        return usuarioRepository.buscarPorCriterio(criterio, pageable);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("nombre").ascending());
+        Page<Usuario> usuarioPage = usuarioRepository.buscarPorCriterio(criterio, pageable);
+        return usuarioPage.map(UsuarioDTO::fromEntity);
     }
 }

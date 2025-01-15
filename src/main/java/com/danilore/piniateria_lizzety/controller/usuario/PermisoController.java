@@ -1,12 +1,10 @@
 package com.danilore.piniateria_lizzety.controller.usuario;
 
 import com.danilore.piniateria_lizzety.dto.usuario.PermisoDTO;
-import com.danilore.piniateria_lizzety.model.usuario.Permiso;
 import com.danilore.piniateria_lizzety.service.usuario.PermisoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,41 +15,43 @@ public class PermisoController {
     private PermisoService permisoService;
 
     @GetMapping
-    public Page<PermisoDTO> listarTodos(@RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "10") int size) { 
-        Pageable pageable = PageRequest.of(page, size);
-        return permisoService.listarTodos(pageable).map(PermisoDTO::fromEntity);
+    public ResponseEntity<Page<PermisoDTO>> getAll(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(permisoService.getAll(page, size));
     }
 
     @GetMapping("/{id}")
-    public PermisoDTO buscarPorId(@PathVariable int id) {
-        Permiso permiso = permisoService.buscarPorId(id);
-        return PermisoDTO.fromEntity(permiso);
+    public ResponseEntity<PermisoDTO> getById(@PathVariable int id) {
+        return ResponseEntity.ok(permisoService.getById(id));
     }
 
     @PostMapping
-    public PermisoDTO guardar(@RequestBody PermisoDTO permisoDTO) {
-        Permiso permiso = permisoDTO.toEntity();
-        Permiso permisoGuardado = permisoService.guardar(permiso);
-        return PermisoDTO.fromEntity(permisoGuardado);
+    public ResponseEntity<PermisoDTO> save(@RequestBody PermisoDTO permisoDTO) {
+        return ResponseEntity.ok(permisoService.save(permisoDTO));
     }
 
     @PutMapping("/editar/{id}")
-    public PermisoDTO editar(@PathVariable int id, @RequestBody PermisoDTO permisoDTO) {
-        Permiso permiso = permisoDTO.toEntity();
-        
-        Permiso permisoEditado = permisoService.editar(id, permiso);
-        return PermisoDTO.fromEntity(permisoEditado);
+    public ResponseEntity<PermisoDTO> update(@PathVariable int id,
+            @RequestBody PermisoDTO permisoDTO) {
+        return ResponseEntity.ok(permisoService.update(id, permisoDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarPorId(@PathVariable int id) {
-        permisoService.eliminarPorId(id);
+    public void deleteById(@PathVariable int id) {
+        permisoService.deleteById(id);
     }
 
     @GetMapping("/buscar-descripcion")
-    public PermisoDTO buscarPorDescripcion(@RequestParam String descripcion) {
-        Permiso permiso = permisoService.buscarPorDescripcion(descripcion);
-        return PermisoDTO.fromEntity(permiso);
+    public ResponseEntity<PermisoDTO> getByDescripcion(@RequestParam String descripcion) {
+        return ResponseEntity.ok(permisoService.getByDescripcion(descripcion));
+    }
+
+    // Listar usarios por nombres o email o id
+    @GetMapping("/buscar")
+    public ResponseEntity<Page<PermisoDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(permisoService.buscarPorCriterio(criterio, page, size));
     }
 }

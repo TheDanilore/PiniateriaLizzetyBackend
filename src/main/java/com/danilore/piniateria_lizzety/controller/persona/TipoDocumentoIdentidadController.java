@@ -3,11 +3,8 @@ package com.danilore.piniateria_lizzety.controller.persona;
 import com.danilore.piniateria_lizzety.dto.persona.TipoDocumentoIdentidadDTO;
 import com.danilore.piniateria_lizzety.model.persona.TipoDocumentoIdentidad;
 import com.danilore.piniateria_lizzety.service.persona.TipoDocumentoIdentidadService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,41 +16,35 @@ public class TipoDocumentoIdentidadController {
     private TipoDocumentoIdentidadService tipoDocumentoIdentidadService;
 
     @GetMapping
-    public Page<TipoDocumentoIdentidadDTO> listarTodos(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return tipoDocumentoIdentidadService.listarTodos(pageable).map(TipoDocumentoIdentidadDTO::fromEntity);
+    public ResponseEntity<Page<TipoDocumentoIdentidadDTO>> getAll(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(tipoDocumentoIdentidadService.getAll(page, size));
     }
 
     // Buscar un tipo de documento de identidad por ID
     @GetMapping("/{id}")
-    public ResponseEntity<TipoDocumentoIdentidadDTO> buscarPorId(@PathVariable String id) {
-        return ResponseEntity.ok(tipoDocumentoIdentidadService.buscarPorIdDTO(id));
+    public ResponseEntity<TipoDocumentoIdentidadDTO> getById(@PathVariable String id) {
+        return ResponseEntity.ok(tipoDocumentoIdentidadService.getById(id));
     }
 
     // Guardar un nuevo tipo de documento de identidad
     @PostMapping
-    public TipoDocumentoIdentidadDTO guardar(@RequestBody TipoDocumentoIdentidadDTO tipoDocumentoIdentidadDTO) {
-        TipoDocumentoIdentidad tipoDocumentoIdentidad = tipoDocumentoIdentidadDTO.toEntity(); // Convierte DTO a entidad
-        TipoDocumentoIdentidad tipoDocumentoIdentidadGuardado = tipoDocumentoIdentidadService
-                .guardar(tipoDocumentoIdentidad); // Guarda la entidad
-        return TipoDocumentoIdentidadDTO.fromEntity(tipoDocumentoIdentidadGuardado);
+    public ResponseEntity<TipoDocumentoIdentidadDTO> save(@RequestBody TipoDocumentoIdentidadDTO tipoDocumentoIdentidadDTO) {
+        return ResponseEntity.ok(tipoDocumentoIdentidadService.save(tipoDocumentoIdentidadDTO));
     }
 
     // Editar un tipo de documento de identidad existente
     @PutMapping("/editar/{id}")
-    public TipoDocumentoIdentidadDTO editar(@PathVariable String id,
+    public ResponseEntity<TipoDocumentoIdentidadDTO> update(@PathVariable String id,
             @RequestBody TipoDocumentoIdentidadDTO tipoDocumentoIdentidadDTO) {
-        TipoDocumentoIdentidad tipoDocumentoIdentidad = tipoDocumentoIdentidadDTO.toEntity(); // Convierte DTO a entidad
-        TipoDocumentoIdentidad tipoDocumentoIdentidadEditado = tipoDocumentoIdentidadService.editar(id,
-                tipoDocumentoIdentidad); // Edita la entidad
-        return TipoDocumentoIdentidadDTO.fromEntity(tipoDocumentoIdentidadEditado);
+        return ResponseEntity.ok(tipoDocumentoIdentidadService.update(id, tipoDocumentoIdentidadDTO));
     }
 
     // Eliminar un tipo de documento de identidad
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable String id) {
-        tipoDocumentoIdentidadService.eliminar(id);
+    public ResponseEntity<Void> deleteById(@PathVariable String id) {
+        tipoDocumentoIdentidadService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/buscar-abreviatura")
@@ -67,4 +58,12 @@ public class TipoDocumentoIdentidadController {
         TipoDocumentoIdentidad tipoDocumentoIdentidad = tipoDocumentoIdentidadService.buscarPorDescripcion(descripcion);
         return TipoDocumentoIdentidadDTO.fromEntity(tipoDocumentoIdentidad);
     }
+
+    public ResponseEntity<Page<TipoDocumentoIdentidadDTO>> buscarPorCriterio(
+            @RequestParam String criterio,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(tipoDocumentoIdentidadService.buscarPorCriterio(criterio, page, size));
+    }
+
 }
