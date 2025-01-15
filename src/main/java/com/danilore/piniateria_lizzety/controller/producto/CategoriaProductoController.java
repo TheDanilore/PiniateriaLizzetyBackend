@@ -43,6 +43,7 @@ public class CategoriaProductoController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<CategoriaProductoDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

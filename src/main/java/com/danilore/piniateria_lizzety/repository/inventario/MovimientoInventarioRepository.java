@@ -16,7 +16,7 @@ import com.danilore.piniateria_lizzety.model.inventario.MovimientoInventario;
 public interface MovimientoInventarioRepository extends JpaRepository<MovimientoInventario, Long> {
 
     @Query("SELECT DISTINCT m FROM MovimientoInventario m WHERE " +
-            "LOWER(m.inventario) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
+            "LOWER(m.inventario.producto.nombre) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
             "CAST(m.id AS string) LIKE :criterio")
     Page<MovimientoInventario> buscarPorCriterio(@Param("criterio") String criterio, Pageable pageable);
     

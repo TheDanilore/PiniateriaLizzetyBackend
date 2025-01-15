@@ -2,7 +2,8 @@ package com.danilore.piniateria_lizzety.dto.inventario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 import com.danilore.piniateria_lizzety.dto.producto.ProductoDTO;
 import com.danilore.piniateria_lizzety.model.inventario.Inventario;
 
@@ -10,25 +11,21 @@ public class InventarioDTO {
 
     private Long id;
     private ProductoDTO producto;
-    private ColorDTO color;
-    private LongitudDTO longitud;
-    private TamanoDTO tamano;
     private BigDecimal precioUnitario;
     private Long cantidad;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Set<VariacionesDTO> variaciones;
 
-    public InventarioDTO(Long id, ProductoDTO producto, ColorDTO color, LongitudDTO longitud, TamanoDTO tamano,
-            BigDecimal precioUnitario, Long cantidad, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public InventarioDTO(Long id, ProductoDTO producto, BigDecimal precioUnitario, Long cantidad,
+            LocalDateTime createdAt, LocalDateTime updatedAt, Set<VariacionesDTO> variaciones) {
         this.id = id;
         this.producto = producto;
-        this.color = color;
-        this.longitud = longitud;
-        this.tamano = tamano;
         this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.variaciones = variaciones;
     }
 
     public InventarioDTO() {
@@ -42,51 +39,26 @@ public class InventarioDTO {
             dto.setProducto(ProductoDTO.fromEntity(inventario.getProducto()));
         }
 
-        if (inventario.getColor() != null) {
-            dto.setColor(ColorDTO.fromEntity(inventario.getColor()));
-        }
-
-        if (inventario.getLongitud() != null) {
-            dto.setLongitud(LongitudDTO.fromEntity(inventario.getLongitud()));
-        }
-
-        if (inventario.getTamano() != null) {
-            dto.setTamano(TamanoDTO.fromEntity(inventario.getTamano()));
-        }
-
         dto.setPrecioUnitario(inventario.getPrecioUnitario());
         dto.setCantidad(inventario.getCantidad());
         dto.setCreatedAt(inventario.getCreatedAt());
         dto.setUpdatedAt(inventario.getUpdatedAt());
+        dto.setVariaciones(inventario.getVariaciones().stream()
+                .map(VariacionesDTO::fromEntity)
+                .collect(Collectors.toSet()));
         return dto;
     }
 
     public Inventario toEntity() {
         Inventario inventario = new Inventario();
         inventario.setId(this.id);
-
-        if (this.producto != null) {
-            inventario.setProducto(this.producto.toEntity());
-        }
-
-        if (this.color != null) {
-            inventario.setColor(this.color.toEntity());
-        }
-
-        if (this.longitud != null) {
-            inventario.setLongitud(this.longitud.toEntity());
-        }
-
-        if (this.tamano != null) {
-            inventario.setLongitud(this.longitud.toEntity());
-        }
-        
         inventario.setPrecioUnitario(this.precioUnitario);
         inventario.setCantidad(this.cantidad);
-        inventario.setCreatedAt(this.createdAt);
-        inventario.setUpdatedAt(this.updatedAt);
+        // No añadir variaciones directamente aquí para evitar bucles
         return inventario;
     }
+    
+    
 
     public Long getId() {
         return id;
@@ -102,30 +74,6 @@ public class InventarioDTO {
 
     public void setProducto(ProductoDTO producto) {
         this.producto = producto;
-    }
-
-    public ColorDTO getColor() {
-        return color;
-    }
-
-    public void setColor(ColorDTO color) {
-        this.color = color;
-    }
-
-    public LongitudDTO getLongitud() {
-        return longitud;
-    }
-
-    public void setLongitud(LongitudDTO longitud) {
-        this.longitud = longitud;
-    }
-
-    public TamanoDTO getTamano() {
-        return tamano;
-    }
-
-    public void setTamano(TamanoDTO tamano) {
-        this.tamano = tamano;
     }
 
     public BigDecimal getPrecioUnitario() {
@@ -160,8 +108,12 @@ public class InventarioDTO {
         this.updatedAt = updatedAt;
     }
 
-    // getters and setters
+    public Set<VariacionesDTO> getVariaciones() {
+        return variaciones;
+    }
 
-    
+    public void setVariaciones(Set<VariacionesDTO> variaciones) {
+        this.variaciones = variaciones;
+    }
 
 }

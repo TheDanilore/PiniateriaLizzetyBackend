@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 public interface TipoDocumentoIdentidadRepository extends JpaRepository<TipoDocumentoIdentidad, String> {
     @Query("SELECT DISTINCT t FROM TipoDocumentoIdentidad t WHERE " +
             "LOWER(t.descripcion) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
-            "CAST(t.idDepartamento AS string) LIKE :criterio")
+            "CAST(t.id AS string) LIKE :criterio")
     Page<TipoDocumentoIdentidad> buscarPorCriterio(@Param("criterio") String criterio, Pageable pageable);
 
     Optional<TipoDocumentoIdentidad> findByAbreviatura(String abreviatura);

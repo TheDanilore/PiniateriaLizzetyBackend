@@ -14,7 +14,7 @@ public class UsuarioDTO {
     private String password; // Incluye la contraseña encriptada
     private String avatar;
     private EstadoEnum estado;
-    private Set<RolDTO> roles = new HashSet<>();
+    private Set<RolDTO> roles;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -64,7 +64,7 @@ public class UsuarioDTO {
         usuario.setUpdatedAt(this.updatedAt);
         usuario.setRoles(this.roles != null
                 ? this.roles.stream()
-                        .map(RolDTO::toEntity) // Ahora válido porque implementaste `toEntity` en RolDTO
+                        .map(RolDTO::toEntity)
                         .collect(Collectors.toSet()) // Cambiar a toSet si es necesario
                 : new HashSet<>());
 

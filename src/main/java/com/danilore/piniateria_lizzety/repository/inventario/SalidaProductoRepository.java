@@ -14,6 +14,7 @@ public interface SalidaProductoRepository extends JpaRepository<SalidaProducto, 
 
     @Query("SELECT DISTINCT s FROM SalidaProducto s WHERE " +
             "LOWER(s.guiaSalida) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
+            "LOWER(s.tipoSalida) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
             "CAST(s.id AS string) LIKE :criterio")
     Page<SalidaProducto> buscarPorCriterio(@Param("criterio") String criterio, Pageable pageable);
 

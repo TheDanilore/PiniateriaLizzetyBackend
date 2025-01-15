@@ -43,6 +43,7 @@ public class MovimientoInventarioController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<MovimientoInventarioDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

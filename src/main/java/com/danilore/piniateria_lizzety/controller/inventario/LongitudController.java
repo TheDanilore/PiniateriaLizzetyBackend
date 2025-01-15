@@ -42,6 +42,7 @@ public class LongitudController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<LongitudDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

@@ -42,6 +42,7 @@ public class EntradaProductoController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<EntradaProductoDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

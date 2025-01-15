@@ -58,6 +58,7 @@ public class ProvinciaController {
         return ProvinciaDTO.fromEntity(provincia);
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<ProvinciaDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

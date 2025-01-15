@@ -42,6 +42,7 @@ public class TamanoController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<TamanoDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

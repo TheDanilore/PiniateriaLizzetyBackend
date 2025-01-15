@@ -2,8 +2,10 @@ package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import com.danilore.piniateria_lizzety.model.producto.Producto;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 
@@ -20,24 +22,6 @@ public class Inventario {
     @JoinColumn(name = "producto_id", referencedColumnName = "id", nullable = false)
     private Producto producto;
 
-    // Inventario se relaciona con longitud, muchos tamano pueden estar en un
-    // inventario
-    @ManyToOne
-    @JoinColumn(name = "color_id", referencedColumnName = "id", nullable = true)
-    private Color color;
-
-    // Inventario se relaciona con longitud, muchos tamano pueden estar en un
-    // inventario
-    @ManyToOne
-    @JoinColumn(name = "longitud_id", referencedColumnName = "id", nullable = true)
-    private Longitud longitud;
-
-    // Inventario se relaciona con tamano, muchos tamano pueden estar en un
-    // inventario
-    @ManyToOne
-    @JoinColumn(name = "tamano_id", referencedColumnName = "id", nullable = true)
-    private Tamano tamano;
-
     @Column(name = "precio_unitario", nullable = false)
     private BigDecimal precioUnitario;
 
@@ -50,13 +34,14 @@ public class Inventario {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Inventario(Long id, Producto producto, Color color, Longitud longitud, Tamano tamano, BigDecimal precioUnitario,
-            Long cantidad) {
+    // Relación con Variaciones (uno a muchos)
+    @OneToMany(mappedBy = "inventario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<Variaciones> variaciones;
+
+    public Inventario(Long id, Producto producto, BigDecimal precioUnitario, Long cantidad) {
         this.id = id;
         this.producto = producto;
-        this.color = color;
-        this.longitud = longitud;
-        this.tamano = tamano;
         this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
     }
@@ -92,30 +77,6 @@ public class Inventario {
         this.producto = producto;
     }
 
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public Longitud getLongitud() {
-        return longitud;
-    }
-
-    public void setLongitud(Longitud longitud) {
-        this.longitud = longitud;
-    }
-
-    public Tamano getTamano() {
-        return tamano;
-    }
-
-    public void setTamano(Tamano tamano) {
-        this.tamano = tamano;
-    }
-
     public BigDecimal getPrecioUnitario() {
         return precioUnitario;
     }
@@ -148,4 +109,11 @@ public class Inventario {
         this.updatedAt = updatedAt;
     }
 
+    public Set<Variaciones> getVariaciones() {
+        return variaciones;
+    }
+
+    public void setVariaciones(Set<Variaciones> variaciones) {
+        this.variaciones = variaciones;
+    }
 }

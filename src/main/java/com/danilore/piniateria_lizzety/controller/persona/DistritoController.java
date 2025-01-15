@@ -56,6 +56,7 @@ public class DistritoController {
         return DistritoDTO.fromEntity(distritoService.buscarPorDescripcion(descripcion));
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<DistritoDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

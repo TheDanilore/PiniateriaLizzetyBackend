@@ -2,6 +2,7 @@ package com.danilore.piniateria_lizzety.service.producto;
 
 import com.danilore.piniateria_lizzety.dto.producto.ProveedorDTO;
 import com.danilore.piniateria_lizzety.exception.DAOException;
+import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.producto.Proveedor;
 import com.danilore.piniateria_lizzety.repository.producto.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,11 @@ public class ProveedorService {
         if (proveedorRepository.findByRazonSocial(proveedor.getRazonSocial()).isPresent()) {
             throw new DAOException("La razon social ya está registrado.");
         }
+        if (proveedorRepository.findByTelefono(proveedor.getTelefono()).isPresent()) {
+            throw new DAOException("El telefono ya está registrado.");
+        }
 
+        proveedor.setEstado(EstadoEnum.ACTIVO); 
         Proveedor savedProveedor = proveedorRepository.save(proveedor);
         return ProveedorDTO.fromEntity(savedProveedor);
     }

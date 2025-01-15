@@ -1,5 +1,6 @@
 package com.danilore.piniateria_lizzety.model.producto;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
@@ -15,7 +16,7 @@ public class Proveedor {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private Long ruc;
+    private BigInteger ruc;
 
     @Column(name = "razon_social", nullable = false, unique = true)
     private String razonSocial;
@@ -28,7 +29,7 @@ public class Proveedor {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
-    private EstadoEnum estado;
+    private EstadoEnum estado = EstadoEnum.ACTIVO;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -36,7 +37,8 @@ public class Proveedor {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Proveedor(Long id, Long ruc, String razonSocial, String direccion, String telefono, EstadoEnum estado) {
+    public Proveedor(Long id, BigInteger ruc, String razonSocial, String direccion, String telefono,
+            EstadoEnum estado) {
         this.id = id;
         this.ruc = ruc;
         this.razonSocial = razonSocial;
@@ -57,8 +59,6 @@ public class Proveedor {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-    
-    //getters and setters
 
     public Long getId() {
         return id;
@@ -68,11 +68,11 @@ public class Proveedor {
         this.id = id;
     }
 
-    public Long getRuc() {
+    public BigInteger getRuc() {
         return ruc;
     }
 
-    public void setRuc(Long ruc) {
+    public void setRuc(BigInteger ruc) {
         this.ruc = ruc;
     }
 
@@ -112,16 +112,19 @@ public class Proveedor {
         return createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+    
+    //getters and setters
 
+    
 }

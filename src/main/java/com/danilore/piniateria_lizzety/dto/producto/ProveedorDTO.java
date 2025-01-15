@@ -1,5 +1,6 @@
 package com.danilore.piniateria_lizzety.dto.producto;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
@@ -8,7 +9,7 @@ import com.danilore.piniateria_lizzety.model.producto.Proveedor;
 public class ProveedorDTO {
 
     private Long id;
-    private Long ruc;
+    private BigInteger ruc;
     private String razonSocial;
     private String direccion;
     private String telefono;
@@ -16,8 +17,8 @@ public class ProveedorDTO {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public ProveedorDTO(Long id, Long ruc, String razonSocial, String direccion, String telefono, EstadoEnum estado,
-            LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ProveedorDTO(Long id, BigInteger ruc, String razonSocial, String direccion, String telefono,
+            EstadoEnum estado, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.ruc = ruc;
         this.razonSocial = razonSocial;
@@ -56,8 +57,6 @@ public class ProveedorDTO {
         proveedor.setUpdatedAt(this.updatedAt);
         return proveedor;
     }
-    
-    //getters and setters
 
     public Long getId() {
         return id;
@@ -67,11 +66,11 @@ public class ProveedorDTO {
         this.id = id;
     }
 
-    public Long getRuc() {
+    public BigInteger getRuc() {
         return ruc;
     }
 
-    public void setRuc(Long ruc) {
+    public void setRuc(BigInteger ruc) {
         this.ruc = ruc;
     }
 
@@ -111,16 +110,20 @@ public class ProveedorDTO {
         return createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+    
+    //getters and setters
+
+    
 
 }

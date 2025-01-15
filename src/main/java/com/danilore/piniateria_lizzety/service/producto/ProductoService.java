@@ -3,6 +3,7 @@ package com.danilore.piniateria_lizzety.service.producto;
 import com.danilore.piniateria_lizzety.dto.producto.ProductoDTO;
 import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.exception.ResourceNotFoundException;
+import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.producto.Producto;
 import com.danilore.piniateria_lizzety.repository.producto.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class ProductoService {
             throw new DAOException("El nombre ya está registrado.");
         }
 
+        producto.setEstado(EstadoEnum.ACTIVO); 
         Producto productoGuardado = productoRepository.save(producto);
         return ProductoDTO.fromEntity(productoGuardado);
     }

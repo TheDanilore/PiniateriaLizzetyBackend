@@ -59,6 +59,7 @@ public class TipoDocumentoIdentidadController {
         return TipoDocumentoIdentidadDTO.fromEntity(tipoDocumentoIdentidad);
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<TipoDocumentoIdentidadDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

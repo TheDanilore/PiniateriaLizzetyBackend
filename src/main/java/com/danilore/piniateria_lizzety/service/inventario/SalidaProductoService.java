@@ -69,7 +69,7 @@ public class SalidaProductoService {
         if (criterio == null || criterio.isBlank()) {
             throw new DAOException("El criterio de búsqueda no puede estar vacío");
         }
-        Pageable pageable = PageRequest.of(page, size, Sort.by("descripcion").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("guiaSalida").ascending());
         Page<SalidaProducto> salidaPage = salidaProductoRepository.buscarPorCriterio(criterio, pageable);
         return salidaPage.map(SalidaProductoDTO::fromEntity);
     }

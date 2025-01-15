@@ -14,7 +14,7 @@ import com.danilore.piniateria_lizzety.model.producto.Producto;
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
     @Query("SELECT DISTINCT p FROM Producto p WHERE " +
             "LOWER(p.nombre) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
-            "LOWER(p.categoriaProducto) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
+            "LOWER(p.categoriaProducto.descripcion) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
             "CAST(p.id AS string) LIKE :criterio")
     Page<Producto> buscarPorCriterio(@Param("criterio") String criterio, Pageable pageable);
 

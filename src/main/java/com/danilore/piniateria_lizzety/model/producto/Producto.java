@@ -37,7 +37,7 @@ public class Producto {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
-    private EstadoEnum estado;
+    private EstadoEnum estado = EstadoEnum.ACTIVO;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

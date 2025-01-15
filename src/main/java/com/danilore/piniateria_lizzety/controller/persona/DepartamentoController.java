@@ -49,6 +49,7 @@ public class DepartamentoController {
         return DepartamentoDTO.fromEntity(departamento);
     }
 
+    @GetMapping("/buscar")
     public ResponseEntity<Page<DepartamentoDTO>> buscarPorCriterio(
             @RequestParam String criterio,
             @RequestParam(defaultValue = "0") int page,

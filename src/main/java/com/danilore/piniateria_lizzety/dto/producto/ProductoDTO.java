@@ -67,7 +67,26 @@ public class ProductoDTO {
     public Producto toEntity() {
         Producto producto = new Producto();
         producto.setId(this.id);
+        producto.setNombre(this.nombre);
         producto.setDescripcion(this.descripcion);
+
+        if (this.categoriaProducto != null) {
+            producto.setCategoriaProducto(this.categoriaProducto.toEntity());
+        }
+
+        if (this.unidadMedida != null) {
+            producto.setUnidadMedida(this.unidadMedida.toEntity());
+        }
+
+        if (this.proveedor != null) {
+            producto.setProveedor(this.proveedor.toEntity());
+        }
+
+        if (this.ubicacion != null) {
+            producto.setUbicacion(this.ubicacion.toEntity());
+        }
+
+        producto.setEstado(this.estado);
         producto.setCreatedAt(this.createdAt);
         producto.setUpdatedAt(this.updatedAt);
         return producto;
