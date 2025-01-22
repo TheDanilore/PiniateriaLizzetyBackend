@@ -4,6 +4,10 @@ import com.danilore.piniateria_lizzety.dto.inventario.SalidaProductoDTO;
 import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.exception.ResourceNotFoundException;
 import com.danilore.piniateria_lizzety.model.inventario.SalidaProducto;
+import com.danilore.piniateria_lizzety.repository.inventario.InventarioRepository;
+import com.danilore.piniateria_lizzety.repository.inventario.ItemEntradaRepository;
+import com.danilore.piniateria_lizzety.repository.inventario.ItemSalidaRepository;
+import com.danilore.piniateria_lizzety.repository.inventario.MovimientoInventarioRepository;
 import com.danilore.piniateria_lizzety.repository.inventario.SalidaProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +21,15 @@ public class SalidaProductoService {
 
     @Autowired
     private SalidaProductoRepository salidaProductoRepository;
+
+    @Autowired
+    private InventarioRepository inventarioRepository;
+
+    @Autowired
+    private MovimientoInventarioRepository movimientoInventarioRepository;
+
+    @Autowired
+    private ItemSalidaRepository itemSalidaRepository;
 
     public Page<SalidaProductoDTO> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);

@@ -30,5 +30,5 @@ public class EntradaProductoRequest {
         this.itemsEntradaDTO = itemsEntradaDTO;
     }
 
-    // Getters y Setters
+
 }

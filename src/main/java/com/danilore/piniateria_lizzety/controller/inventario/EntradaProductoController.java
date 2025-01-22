@@ -2,18 +2,14 @@ package com.danilore.piniateria_lizzety.controller.inventario;
 
 import com.danilore.piniateria_lizzety.dto.inventario.EntradaProductoDTO;
 import com.danilore.piniateria_lizzety.dto.inventario.EntradaProductoRequest;
-import com.danilore.piniateria_lizzety.dto.inventario.ItemEntradaDTO;
 import com.danilore.piniateria_lizzety.service.inventario.EntradaProductoService;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/entradas-producto")
+@RequestMapping("/api/entradas-productos")
 public class EntradaProductoController {
 
     @Autowired

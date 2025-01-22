@@ -41,7 +41,7 @@ public class InventarioService {
 
     public InventarioDTO getById(Long id) {
         Inventario inventario = inventarioRepository.findById(id)
-                .orElseThrow(() -> new DAOException("Tamaño no encontrado con ID: " + id));
+                .orElseThrow(() -> new DAOException("Inventario no encontrado con ID: " + id));
         return InventarioDTO.fromEntity(inventario);
     }
 

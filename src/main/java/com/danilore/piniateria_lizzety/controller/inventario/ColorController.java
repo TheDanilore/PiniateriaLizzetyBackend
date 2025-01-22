@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/colors")
+@RequestMapping("/api/colores")
 public class ColorController {
 
     @Autowired

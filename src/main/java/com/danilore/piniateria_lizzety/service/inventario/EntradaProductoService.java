@@ -8,6 +8,7 @@ import com.danilore.piniateria_lizzety.model.inventario.Inventario;
 import com.danilore.piniateria_lizzety.model.inventario.ItemEntrada;
 import com.danilore.piniateria_lizzety.model.inventario.MovimientoInventario;
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoMovimientoEnum;
+import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.repository.inventario.EntradaProductoRepository;
 import com.danilore.piniateria_lizzety.repository.inventario.InventarioRepository;
 import com.danilore.piniateria_lizzety.repository.inventario.ItemEntradaRepository;
@@ -15,6 +16,8 @@ import com.danilore.piniateria_lizzety.repository.inventario.MovimientoInventari
 
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,7 @@ public class EntradaProductoService {
     @Autowired
     private MovimientoInventarioRepository movimientoInventarioRepository;
 
+    @Autowired
     private ItemEntradaRepository itemEntradaRepository;
 
     public Page<EntradaProductoDTO> getAll(int page, int size) {
@@ -53,6 +57,10 @@ public class EntradaProductoService {
 
     @Transactional
     public EntradaProductoDTO save(EntradaProductoDTO entradaProductoDTO, List<ItemEntradaDTO> itemsEntradaDTO) {
+        if (itemsEntradaDTO == null || itemsEntradaDTO.isEmpty()) {
+            throw new DAOException("Debe proporcionar al menos un item para la entrada.");
+        }
+
         // Convertir DTO a entidad
         EntradaProducto entrada = entradaProductoDTO.toEntity();
 
@@ -64,63 +72,77 @@ public class EntradaProductoService {
         // Guardar la entrada principal
         EntradaProducto savedEntrada = entradaProductoRepository.save(entrada);
 
+        List<MovimientoInventario> movimientos = new ArrayList<>();
+        List<Inventario> inventariosActualizados = new ArrayList<>();
+
         // Procesar cada item de la entrada
         for (ItemEntradaDTO itemDTO : itemsEntradaDTO) {
             // Vincular el item con la entrada guardada
             itemDTO.setEntradaProducto(EntradaProductoDTO.fromEntity(savedEntrada));
 
             // Convertir item a entidad
-            ItemEntrada item = itemDTO.toEntity();
-
-
-            // Guardar el item de la entrada
-            ItemEntrada savedItem = itemEntradaRepository.save(item);
+            ItemEntrada  item = itemDTO.toEntity();
+            itemEntradaRepository.save(item);
 
             // Obtener o actualizar el inventario correspondiente
-            Inventario inventario = obtenerOActualizarInventario(itemDTO);
+            //Solo se obtiene el inventario por id (si existe el inventario)
+            //Luego implemento que cree uno nuevo en caso no exista el inventario
+            Inventario inventario = inventarioRepository.findById(itemDTO.getInventario().getId())
+                .orElseThrow(() -> new DAOException("Inventario no encontrado con ID: " + itemDTO.getInventario().getId()));
 
-            // Crear un movimiento de inventario asociado
-            MovimientoInventario movimiento = new MovimientoInventario();
-            movimiento.setInventario(inventario);
-            movimiento.setTipoMovimiento(TipoMovimientoEnum.ENTRADA);
-            movimiento.setCantidad(itemDTO.getCantidad());
-            movimiento.setCantidadAnterior(inventario.getCantidad());
-            movimiento.setCantidadActual(inventario.getCantidad() + itemDTO.getCantidad());
-            movimiento.setUsuario(entrada.getUsuario()); // Asegúrate de pasar el usuario correctamente
-            movimiento.setObservacion("Entrada de producto: " + savedEntrada.getGuiaRemision());
-            movimiento.setFecha(itemDTO.getCreatedAt());
+            //Inventario inventario = obtenerOActualizarInventario(itemDTO);
 
-            // Actualizar la cantidad en inventario
+            // Crear y configurar el movimiento
+            MovimientoInventario movimiento = crearMovimientoInventario(
+                    inventario,
+                    entrada.getUsuario(),
+                    itemDTO.getCantidad(),
+                    entrada.getGuiaRemision(),
+                    TipoMovimientoEnum.ENTRADA);
+
+            // Actualizar inventario
             inventario.setCantidad(inventario.getCantidad() + itemDTO.getCantidad());
-            inventarioRepository.save(inventario);
-
-            // Guardar el movimiento de inventario
-            movimientoInventarioRepository.save(movimiento);
+            inventariosActualizados.add(inventario);
+            movimientos.add(movimiento);
         }
 
-        // Retornar la entrada guardada convertida a DTO
+        // Guardar movimientos e inventarios en lote
+        inventarioRepository.saveAll(inventariosActualizados);
+        movimientoInventarioRepository.saveAll(movimientos);
+
         return EntradaProductoDTO.fromEntity(savedEntrada);
     }
 
+    private MovimientoInventario crearMovimientoInventario(Inventario inventario, Usuario usuario, Long cantidad,
+            String guiaRemision, TipoMovimientoEnum tipoMovimiento) {
+        MovimientoInventario movimiento = new MovimientoInventario();
+        movimiento.setInventario(inventario);
+        movimiento.setUsuario(usuario);
+        movimiento.setTipoMovimiento(tipoMovimiento);
+        movimiento.setCantidad(cantidad);
+        movimiento.setCantidadAnterior(inventario.getCantidad());
+        movimiento.setCantidadActual(inventario.getCantidad() + cantidad);
+        movimiento.setObservacion("Entrada de producto, guía: " + guiaRemision);
+        movimiento.setFecha(LocalDateTime.now());
+        return movimiento;
+    }
+
     private Inventario obtenerOActualizarInventario(ItemEntradaDTO itemDTO) {
+        ItemEntrada item = itemDTO.toEntity();
+
         return inventarioRepository.findByProductoIdAndVariacion(
-                itemDTO.getProducto().getId(),
+                itemDTO.getInventario().getId(),
                 itemDTO.getInventario().getVariacion().getColor().getId(),
                 itemDTO.getInventario().getVariacion().getLongitud().getId(),
-                itemDTO.getInventario().getVariacion().getTamano().getId()
-        ).orElseGet(() -> {
-            Inventario nuevoInventario = new Inventario();
-            ItemEntrada item = itemDTO.toEntity();
-
-            nuevoInventario.setProducto(item.getProducto());
-            nuevoInventario.setVariacion(item.getInventario().getVariacion());
-            nuevoInventario.setCantidad(0L);
-            nuevoInventario.setPrecioUnitario(itemDTO.getPrecioUnitario());
-            return inventarioRepository.save(nuevoInventario);
-        });
+                itemDTO.getInventario().getVariacion().getTamano().getId()).orElseGet(() -> {
+                    Inventario nuevoInventario = new Inventario();
+                    nuevoInventario.setProducto(item.getProducto());
+                    nuevoInventario.setVariacion(item.getInventario().getVariacion());
+                    nuevoInventario.setCantidad(0L); // Inicializar en 0
+                    nuevoInventario.setPrecioUnitario(itemDTO.getPrecioUnitario());
+                    return nuevoInventario;
+                });
     }
-    
-    
 
     public EntradaProductoDTO update(Long id, EntradaProductoDTO entradaProductoDTO) {
         EntradaProducto entradaActualizada = entradaProductoDTO.toEntity();
