@@ -1,7 +1,6 @@
 package com.danilore.piniateria_lizzety.controller.inventario;
 
 import com.danilore.piniateria_lizzety.dto.inventario.InventarioDTO;
-import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.service.inventario.InventarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,8 +32,9 @@ public class InventarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InventarioDTO> update(@PathVariable Long id, @RequestBody InventarioDTO inventarioDTO, @RequestParam UsuarioDTO usuario) {
-        return ResponseEntity.ok(inventarioService.update(id, inventarioDTO, usuario));
+    public ResponseEntity<InventarioDTO> update(@PathVariable Long id, @RequestBody InventarioDTO inventarioDTO,
+            @RequestParam Long usuarioId) {
+        return ResponseEntity.ok(inventarioService.update(id, inventarioDTO, usuarioId));
     }
 
     @DeleteMapping("/{id}")

@@ -4,7 +4,6 @@ import com.danilore.piniateria_lizzety.dto.inventario.ColorDTO;
 import com.danilore.piniateria_lizzety.dto.inventario.InventarioDTO;
 import com.danilore.piniateria_lizzety.dto.inventario.LongitudDTO;
 import com.danilore.piniateria_lizzety.dto.inventario.TamanoDTO;
-import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.inventario.Color;
 import com.danilore.piniateria_lizzety.model.inventario.Inventario;
@@ -17,9 +16,8 @@ import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.repository.inventario.InventarioRepository;
 import com.danilore.piniateria_lizzety.repository.inventario.MovimientoInventarioRepository;
 import com.danilore.piniateria_lizzety.repository.inventario.VariacionRepository;
+import com.danilore.piniateria_lizzety.repository.usuario.UsuarioRepository;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,6 +38,9 @@ public class InventarioService {
 
     @Autowired
     private MovimientoInventarioRepository movimientoInventarioRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public Page<InventarioDTO> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -105,7 +106,7 @@ public class InventarioService {
         return variacionRepository.save(nuevaVariacion);
     }
 
-    public InventarioDTO update(Long id, InventarioDTO inventarioDTO, UsuarioDTO usuarioDTO) {
+    public InventarioDTO update(Long id, InventarioDTO inventarioDTO, Long usuarioId) {
         if (inventarioDTO.getVariacion() == null) {
             throw new DAOException("La variación no puede ser nula.");
         }
@@ -133,19 +134,20 @@ public class InventarioService {
         inventarioExistente.setProducto(inventarioDTO.getProducto().toEntity());
         inventarioExistente.setPrecioUnitario(inventarioDTO.getPrecioUnitario());
 
-        List<MovimientoInventario> movimientos = new ArrayList<>();
-        Usuario usuario = usuarioDTO.toEntity();
+        MovimientoInventario movimiento = new MovimientoInventario();
+
+        Usuario usuario = usuarioRepository.getById(usuarioId);
 
         if (inventarioExistente.getCantidad() != inventarioDTO.getCantidad()) {
             // Crear y configurar el movimiento
-            MovimientoInventario movimiento = crearMovimientoInventario(
-                    inventarioExistente,
-                    usuario,
-                    inventarioDTO.getCantidad(),
-                    TipoMovimientoEnum.AJUSTE);
-
-            movimientos.add(movimiento);
-
+            movimiento.setInventario(inventarioExistente);
+            movimiento.setUsuario(usuario);
+            movimiento.setTipoMovimiento(TipoMovimientoEnum.AJUSTE);
+            movimiento.setCantidad(inventarioDTO.getCantidad());
+            movimiento.setCantidadAnterior(inventarioExistente.getCantidad());
+            movimiento.setCantidadActual(inventarioDTO.getCantidad());
+            movimiento.setObservacion("Ajuste de Inventario, se actualizo el stock directamente");
+            movimiento.setFecha(LocalDateTime.now());
         }
 
         inventarioExistente.setCantidad(inventarioDTO.getCantidad());
@@ -153,23 +155,10 @@ public class InventarioService {
 
         // Guardar los cambios
         Inventario inventarioGuardado = inventarioRepository.save(inventarioExistente);
-        movimientoInventarioRepository.saveAll(movimientos);
+        movimientoInventarioRepository.save(movimiento);
         return InventarioDTO.fromEntity(inventarioGuardado);
     }
 
-    private MovimientoInventario crearMovimientoInventario(Inventario inventario, Usuario usuario, Long cantidad,
-            TipoMovimientoEnum tipoMovimiento) {
-        MovimientoInventario movimiento = new MovimientoInventario();
-        movimiento.setInventario(inventario);
-        movimiento.setUsuario(usuario);
-        movimiento.setTipoMovimiento(tipoMovimiento);
-        movimiento.setCantidad(cantidad);
-        movimiento.setCantidadAnterior(inventario.getCantidad());
-        movimiento.setCantidadActual(cantidad);
-        movimiento.setObservacion("Ajuste de Inventario, se actualizo el stock directamente");
-        movimiento.setFecha(LocalDateTime.now());
-        return movimiento;
-    }
 
     // private Usuario obtenerUsuarioActual() {
     //     // Obtener la autenticación actual desde el contexto de seguridad
