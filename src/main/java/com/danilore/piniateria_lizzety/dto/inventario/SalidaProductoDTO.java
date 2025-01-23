@@ -3,6 +3,7 @@ package com.danilore.piniateria_lizzety.dto.inventario;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.model.inventario.SalidaProducto;
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoSalidaEnum;
 
@@ -13,17 +14,20 @@ public class SalidaProductoDTO {
     private TipoSalidaEnum tipoSalida;
     private String destino;
     private LocalDate fecha;
+    private UsuarioDTO usuario;
     private String observacion;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+
     public SalidaProductoDTO(Long id, String guiaSalida, TipoSalidaEnum tipoSalida, String destino, LocalDate fecha,
-            String observacion, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            UsuarioDTO usuario, String observacion, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.guiaSalida = guiaSalida;
         this.tipoSalida = tipoSalida;
         this.destino = destino;
         this.fecha = fecha;
+        this.usuario = usuario;
         this.observacion = observacion;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -39,6 +43,11 @@ public class SalidaProductoDTO {
         dto.setTipoSalida(salidaProducto.getTipoSalida());
         dto.setDestino(salidaProducto.getDestino());
         dto.setFecha(salidaProducto.getFecha());
+
+        if (salidaProducto.getUsuario() != null) {
+            dto.setUsuario(UsuarioDTO.fromEntity(salidaProducto.getUsuario()));
+        }
+
         dto.setObservacion(salidaProducto.getObservacion());
         dto.setCreatedAt(salidaProducto.getCreatedAt());
         dto.setUpdatedAt(salidaProducto.getUpdatedAt());
@@ -52,6 +61,11 @@ public class SalidaProductoDTO {
         salidaProducto.setTipoSalida(this.tipoSalida);
         salidaProducto.setDestino(this.destino);
         salidaProducto.setFecha(this.fecha);
+
+        if (this.usuario != null) {
+            salidaProducto.setUsuario(this.usuario.toEntity());
+        }
+
         salidaProducto.setObservacion(this.observacion);
         salidaProducto.setCreatedAt(this.createdAt);
         salidaProducto.setUpdatedAt(this.updatedAt);
@@ -122,6 +136,14 @@ public class SalidaProductoDTO {
 
     public void setTipoSalida(TipoSalidaEnum tipoSalida) {
         this.tipoSalida = tipoSalida;
+    }
+
+    public UsuarioDTO getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDTO usuario) {
+        this.usuario = usuario;
     }
 
 }

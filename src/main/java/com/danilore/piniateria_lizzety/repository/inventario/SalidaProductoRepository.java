@@ -12,11 +12,18 @@ import com.danilore.piniateria_lizzety.model.inventario.SalidaProducto;
 @Repository
 public interface SalidaProductoRepository extends JpaRepository<SalidaProducto, Long> {
 
-    @Query("SELECT DISTINCT s FROM SalidaProducto s WHERE " +
+    @Query("SELECT DISTINCT s FROM SalidaProducto s WHERE s.deletedAt IS NULL AND " +
             "LOWER(s.guiaSalida) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
             "LOWER(s.tipoSalida) LIKE LOWER(CONCAT('%', :criterio, '%')) OR " +
             "CAST(s.id AS string) LIKE :criterio")
     Page<SalidaProducto> buscarPorCriterio(@Param("criterio") String criterio, Pageable pageable);
 
     Optional<SalidaProducto> findByGuiaSalida(String guiaSalida);
+
+
+    @Query("SELECT s FROM SalidaProducto s WHERE s.deletedAt IS NULL")
+    Page<SalidaProducto> findAllActivas(Pageable pageable);
+
+    @Query("SELECT s FROM SalidaProducto s WHERE s.id = :id AND s.deletedAt IS NULL")
+    Optional<SalidaProducto> findByIdActiva(@Param("id") Long id);
 }

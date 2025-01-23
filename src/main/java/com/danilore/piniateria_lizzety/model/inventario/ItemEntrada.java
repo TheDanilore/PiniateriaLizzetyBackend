@@ -2,9 +2,7 @@ package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import com.danilore.piniateria_lizzety.model.producto.Producto;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -45,6 +43,9 @@ public class ItemEntrada {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     public ItemEntrada(Long id, EntradaProducto entradaProducto, Producto producto, Inventario inventario,
             Long cantidad, BigDecimal precioUnitario, BigDecimal igv, BigDecimal costoTotal) {
         this.id = id;
@@ -68,6 +69,10 @@ public class ItemEntrada {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void markAsDeleted() {
+        this.deletedAt = LocalDateTime.now();
     }
 
     // getters and setters
@@ -150,6 +155,14 @@ public class ItemEntrada {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
 }

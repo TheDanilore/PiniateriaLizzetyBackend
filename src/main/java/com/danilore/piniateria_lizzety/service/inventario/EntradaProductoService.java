@@ -44,15 +44,19 @@ public class EntradaProductoService {
 
     public Page<EntradaProductoDTO> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("fecha").descending());
-        Page<EntradaProducto> entradaPage = entradaProductoRepository.findAll(pageable);
+        Page<EntradaProducto> entradaPage = entradaProductoRepository.findAllActivas(pageable);
 
         return entradaPage.map(EntradaProductoDTO::fromEntity);
     }
 
-    public EntradaProductoDTO getById(Long id) {
-        EntradaProducto entrada = entradaProductoRepository.findById(id)
-                .orElseThrow(() -> new DAOException("Entrada no encontrado con ID: " + id));
-        return EntradaProductoDTO.fromEntity(entrada);
+    @Transactional
+    public Page<ItemEntradaDTO> getById(Long id, int page, int size) {
+        EntradaProducto entrada = entradaProductoRepository.findByIdActiva(id)
+                .orElseThrow(() -> new DAOException("Entrada no encontrada con ID: " + id));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("entradaProducto.id").ascending());
+        Page<ItemEntrada> itemPage = itemEntradaRepository.findByEntradaProductoId(entrada.getId(), pageable);
+        return itemPage.map(ItemEntradaDTO::fromEntity);
     }
 
     @Transactional
@@ -81,16 +85,17 @@ public class EntradaProductoService {
             itemDTO.setEntradaProducto(EntradaProductoDTO.fromEntity(savedEntrada));
 
             // Convertir item a entidad
-            ItemEntrada  item = itemDTO.toEntity();
+            ItemEntrada item = itemDTO.toEntity();
             itemEntradaRepository.save(item);
 
             // Obtener o actualizar el inventario correspondiente
-            //Solo se obtiene el inventario por id (si existe el inventario)
-            //Luego implemento que cree uno nuevo en caso no exista el inventario
+            // Solo se obtiene el inventario por id (si existe el inventario)
+            // Luego implemento que cree uno nuevo en caso no exista el inventario
             Inventario inventario = inventarioRepository.findById(itemDTO.getInventario().getId())
-                .orElseThrow(() -> new DAOException("Inventario no encontrado con ID: " + itemDTO.getInventario().getId()));
+                    .orElseThrow(() -> new DAOException(
+                            "Inventario no encontrado con ID: " + itemDTO.getInventario().getId()));
 
-            //Inventario inventario = obtenerOActualizarInventario(itemDTO);
+            // Inventario inventario = obtenerOCrearNuevoInventario(itemDTO);
 
             // Crear y configurar el movimiento
             MovimientoInventario movimiento = crearMovimientoInventario(
@@ -127,44 +132,44 @@ public class EntradaProductoService {
         return movimiento;
     }
 
-    private Inventario obtenerOActualizarInventario(ItemEntradaDTO itemDTO) {
-        ItemEntrada item = itemDTO.toEntity();
 
-        return inventarioRepository.findByProductoIdAndVariacion(
-                itemDTO.getInventario().getId(),
-                itemDTO.getInventario().getVariacion().getColor().getId(),
-                itemDTO.getInventario().getVariacion().getLongitud().getId(),
-                itemDTO.getInventario().getVariacion().getTamano().getId()).orElseGet(() -> {
-                    Inventario nuevoInventario = new Inventario();
-                    nuevoInventario.setProducto(item.getProducto());
-                    nuevoInventario.setVariacion(item.getInventario().getVariacion());
-                    nuevoInventario.setCantidad(0L); // Inicializar en 0
-                    nuevoInventario.setPrecioUnitario(itemDTO.getPrecioUnitario());
-                    return nuevoInventario;
-                });
-    }
-
-    public EntradaProductoDTO update(Long id, EntradaProductoDTO entradaProductoDTO) {
-        EntradaProducto entradaActualizada = entradaProductoDTO.toEntity();
-
-        EntradaProducto entradaExistente = entradaProductoRepository.findById(id)
+    @Transactional
+    public void deleteById(Long id) {
+        EntradaProducto entrada = entradaProductoRepository.findById(id)
                 .orElseThrow(() -> new DAOException("Entrada no encontrada con ID: " + id));
 
-        entradaExistente.setProveedor(entradaActualizada.getProveedor());
-        entradaExistente.setGuiaRemision(entradaActualizada.getGuiaRemision());
-        entradaExistente.setTipoEntrada(entradaActualizada.getTipoEntrada());
-        entradaExistente.setProcedencia(entradaActualizada.getProcedencia());
-        entradaExistente.setFecha(entradaActualizada.getFecha());
-        entradaExistente.setObservacion(entradaActualizada.getObservacion());
+        List<ItemEntrada> items = itemEntradaRepository.findByEntradaProductoId(id);
 
-        return EntradaProductoDTO.fromEntity(entradaProductoRepository.save(entradaExistente));
-    }
+        List<MovimientoInventario> movimientos = new ArrayList<>();
+        List<Inventario> inventariosActualizados = new ArrayList<>();
 
-    public void deleteById(Long id) {
-        if (!entradaProductoRepository.existsById(id)) {
-            throw new DAOException("Entrada no encontrada con ID: " + id);
+        for (ItemEntrada item : items) {
+            Inventario inventario = item.getInventario();
+
+            // Crear movimiento de reversión
+            MovimientoInventario movimiento = crearMovimientoInventario(
+                    inventario,
+                    entrada.getUsuario(),
+                    -item.getCantidad(),
+                    entrada.getGuiaRemision(),
+                    TipoMovimientoEnum.REVERSION_ENTRADA);
+
+            // Actualizar inventario
+            inventario.setCantidad(inventario.getCantidad() - item.getCantidad());
+            inventariosActualizados.add(inventario);
+            movimientos.add(movimiento);
+            item.markAsDeleted();
         }
-        entradaProductoRepository.deleteById(id);
+
+        // Guardar movimientos e inventarios actualizados
+        movimientoInventarioRepository.saveAll(movimientos);
+        inventarioRepository.saveAll(inventariosActualizados);
+
+        // Marcar la entrada como eliminada (soft delete)
+        //itemEntradaRepository.deleteAll(items);
+        //entradaProductoRepository.deleteById(id);
+        entrada.markAsDeleted(); // Marca como eliminada (soft delete)
+        entradaProductoRepository.save(entrada);
     }
 
     // Listar por descripcion o ID

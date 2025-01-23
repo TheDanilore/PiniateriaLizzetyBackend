@@ -45,6 +45,8 @@ public class ItemSalida {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     public ItemSalida(Long id, SalidaProducto salidaProducto, Producto producto, Inventario inventario, Long cantidad,
             BigDecimal precioUnitario, BigDecimal igv, BigDecimal costoTotal) {
@@ -69,6 +71,10 @@ public class ItemSalida {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void markAsDeleted() {
+        this.deletedAt = LocalDateTime.now();
     }
 
     // getters and setters
@@ -151,6 +157,14 @@ public class ItemSalida {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
 }

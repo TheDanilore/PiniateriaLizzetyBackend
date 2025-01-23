@@ -2,6 +2,7 @@ package com.danilore.piniateria_lizzety.controller.inventario;
 
 import com.danilore.piniateria_lizzety.dto.inventario.EntradaProductoDTO;
 import com.danilore.piniateria_lizzety.dto.inventario.EntradaProductoRequest;
+import com.danilore.piniateria_lizzety.dto.inventario.ItemEntradaDTO;
 import com.danilore.piniateria_lizzety.service.inventario.EntradaProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,20 +24,16 @@ public class EntradaProductoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EntradaProductoDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(entradaProductoService.getById(id));
+    public ResponseEntity<Page<ItemEntradaDTO>> getById(@PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(entradaProductoService.getById(id, page, size));
     }
 
     @PostMapping
     public ResponseEntity<EntradaProductoDTO> save(@RequestBody EntradaProductoRequest request) {
         return ResponseEntity
                 .ok(entradaProductoService.save(request.getEntradaProductoDTO(), request.getItemsEntradaDTO()));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<EntradaProductoDTO> update(@PathVariable Long id,
-            @RequestBody EntradaProductoDTO entradaProductoDTO) {
-        return ResponseEntity.ok(entradaProductoService.update(id, entradaProductoDTO));
     }
 
     @DeleteMapping("/{id}")

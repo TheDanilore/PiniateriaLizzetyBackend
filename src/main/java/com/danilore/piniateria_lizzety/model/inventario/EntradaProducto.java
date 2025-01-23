@@ -2,11 +2,9 @@ package com.danilore.piniateria_lizzety.model.inventario;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoEntradaEnum;
 import com.danilore.piniateria_lizzety.model.producto.Proveedor;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -34,7 +32,7 @@ public class EntradaProducto {
     @Column(nullable = false)
     private LocalDate fecha;
 
-    // Un usuario va a estar asociado a un movimiento en especifico
+    // Un usuario va a estar asociado a una entrada en especifico
     @ManyToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)
     private Usuario usuario;
@@ -48,7 +46,8 @@ public class EntradaProducto {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     public EntradaProducto(Long id, Proveedor proveedor, String guiaRemision, TipoEntradaEnum tipoEntrada,
             String procedencia, LocalDate fecha, Usuario usuario, String observacion) {
@@ -75,6 +74,10 @@ public class EntradaProducto {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void markAsDeleted() {
+        this.deletedAt = LocalDateTime.now();
+    }
+    
     // getters and setters
 
     public Long getId() {
@@ -156,5 +159,15 @@ public class EntradaProducto {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+
 
 }

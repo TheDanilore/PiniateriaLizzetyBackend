@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoSalidaEnum;
+import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 
 import jakarta.persistence.*;
 
@@ -14,7 +15,7 @@ public class SalidaProducto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(name = "guia_salida", nullable = false, unique = true)
     private String guiaSalida;
 
@@ -28,6 +29,11 @@ public class SalidaProducto {
     @Column(nullable = false)
     private LocalDate fecha;
 
+    // Un usuario va a estar asociado a una salida en especifico
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)
+    private Usuario usuario;
+
     @Column(nullable = false, length = 500)
     private String observacion;
 
@@ -37,13 +43,17 @@ public class SalidaProducto {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     public SalidaProducto(Long id, String guiaSalida, TipoSalidaEnum tipoSalida, String destino, LocalDate fecha,
-            String observacion) {
+            Usuario usuario, String observacion) {
         this.id = id;
         this.guiaSalida = guiaSalida;
         this.tipoSalida = tipoSalida;
         this.destino = destino;
         this.fecha = fecha;
+        this.usuario = usuario;
         this.observacion = observacion;
     }
 
@@ -59,8 +69,12 @@ public class SalidaProducto {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-    
-    //getters and setters
+
+    public void markAsDeleted() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    // getters and setters
 
     public Long getId() {
         return id;
@@ -124,6 +138,22 @@ public class SalidaProducto {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
 }

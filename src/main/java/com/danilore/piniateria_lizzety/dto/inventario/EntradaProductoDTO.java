@@ -54,8 +54,10 @@ public class EntradaProductoDTO {
         if (entradaProducto.getUsuario() != null) {
             dto.setUsuario(UsuarioDTO.fromEntity(entradaProducto.getUsuario()));
         }
+
         dto.setCreatedAt(entradaProducto.getCreatedAt());
         dto.setUpdatedAt(entradaProducto.getUpdatedAt());
+
         return dto;
     }
 
@@ -78,6 +80,7 @@ public class EntradaProductoDTO {
         entradaProducto.setObservacion(this.observacion);
         entradaProducto.setCreatedAt(this.createdAt);
         entradaProducto.setUpdatedAt(this.updatedAt);
+
         return entradaProducto;
     }
 
@@ -160,7 +163,5 @@ public class EntradaProductoDTO {
     public void setUsuario(UsuarioDTO usuario) {
         this.usuario = usuario;
     }
-
-    // getters and setters
 
 }

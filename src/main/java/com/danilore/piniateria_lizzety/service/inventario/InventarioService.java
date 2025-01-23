@@ -8,13 +8,17 @@ import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.inventario.Color;
 import com.danilore.piniateria_lizzety.model.inventario.Inventario;
 import com.danilore.piniateria_lizzety.model.inventario.Longitud;
+import com.danilore.piniateria_lizzety.model.inventario.MovimientoInventario;
 import com.danilore.piniateria_lizzety.model.inventario.Tamano;
 import com.danilore.piniateria_lizzety.model.inventario.Variacion;
+import com.danilore.piniateria_lizzety.model.inventario.enums.TipoMovimientoEnum;
 import com.danilore.piniateria_lizzety.repository.inventario.InventarioRepository;
+import com.danilore.piniateria_lizzety.repository.inventario.MovimientoInventarioRepository;
 import com.danilore.piniateria_lizzety.repository.inventario.VariacionRepository;
-
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +35,9 @@ public class InventarioService {
 
     @Autowired
     private VariacionRepository variacionRepository;
+
+    @Autowired
+    private MovimientoInventarioRepository movimientoInventarioRepository;
 
     public Page<InventarioDTO> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -50,6 +57,7 @@ public class InventarioService {
         if (inventarioDTO.getVariacion() == null) {
             throw new DAOException("La variación no puede ser nula.");
         }
+
         // Verificar o crear variaciones
         Variacion variacion = findOrCreateVariacion(
                 inventarioDTO.getVariacion().getColor(),
@@ -122,14 +130,60 @@ public class InventarioService {
         // Actualizar atributos básicos
         inventarioExistente.setProducto(inventarioDTO.getProducto().toEntity());
         inventarioExistente.setPrecioUnitario(inventarioDTO.getPrecioUnitario());
+
+        List<MovimientoInventario> movimientos = new ArrayList<>();
+
+        if (inventarioExistente.getCantidad() != inventarioDTO.getCantidad()) {
+            // Crear y configurar el movimiento
+            MovimientoInventario movimiento = crearMovimientoInventario(
+                    inventarioExistente,
+                    inventarioDTO.getCantidad(),
+                    TipoMovimientoEnum.AJUSTE);
+
+            movimientos.add(movimiento);
+
+        }
+
         inventarioExistente.setCantidad(inventarioDTO.getCantidad());
         inventarioExistente.setVariacion(variacion); // Actualizar la relación con la nueva variación
 
         // Guardar los cambios
         Inventario inventarioGuardado = inventarioRepository.save(inventarioExistente);
-
+        movimientoInventarioRepository.saveAll(movimientos);
         return InventarioDTO.fromEntity(inventarioGuardado);
     }
+
+    private MovimientoInventario crearMovimientoInventario(Inventario inventario, Long cantidad,
+            TipoMovimientoEnum tipoMovimiento) {
+        MovimientoInventario movimiento = new MovimientoInventario();
+        movimiento.setInventario(inventario);
+        movimiento.setUsuario(null);
+        movimiento.setTipoMovimiento(tipoMovimiento);
+        movimiento.setCantidad(cantidad);
+        movimiento.setCantidadAnterior(inventario.getCantidad());
+        movimiento.setCantidadActual(cantidad);
+        movimiento.setObservacion("Ajuste de Inventario");
+        movimiento.setFecha(LocalDateTime.now());
+        return movimiento;
+    }
+
+    // private Usuario obtenerUsuarioActual() {
+    //     // Obtener la autenticación actual desde el contexto de seguridad
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    //     if (authentication == null || !authentication.isAuthenticated()) {
+    //         throw new DAOException("No se pudo obtener el usuario autenticado.");
+    //     }
+
+    //     // Suponiendo que el usuario autenticado es una instancia de un usuario
+    //     // personalizado
+    //     String username = authentication.getName(); // Obtener el nombre de usuario
+
+    //     // Buscar el usuario en tu base de datos (asegúrate de tener un repositorio para
+    //     // usuarios)
+    //     return usuarioRepository.findByUsername(username)
+    //             .orElseThrow(() -> new DAOException("Usuario no encontrado: " + username));
+    // }
 
     public void deleteById(Long id) {
         if (!inventarioRepository.existsById(id)) {
