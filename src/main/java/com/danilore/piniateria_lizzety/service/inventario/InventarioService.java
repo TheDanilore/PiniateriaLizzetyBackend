@@ -4,6 +4,7 @@ import com.danilore.piniateria_lizzety.dto.inventario.ColorDTO;
 import com.danilore.piniateria_lizzety.dto.inventario.InventarioDTO;
 import com.danilore.piniateria_lizzety.dto.inventario.LongitudDTO;
 import com.danilore.piniateria_lizzety.dto.inventario.TamanoDTO;
+import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.inventario.Color;
 import com.danilore.piniateria_lizzety.model.inventario.Inventario;
@@ -12,6 +13,7 @@ import com.danilore.piniateria_lizzety.model.inventario.MovimientoInventario;
 import com.danilore.piniateria_lizzety.model.inventario.Tamano;
 import com.danilore.piniateria_lizzety.model.inventario.Variacion;
 import com.danilore.piniateria_lizzety.model.inventario.enums.TipoMovimientoEnum;
+import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.repository.inventario.InventarioRepository;
 import com.danilore.piniateria_lizzety.repository.inventario.MovimientoInventarioRepository;
 import com.danilore.piniateria_lizzety.repository.inventario.VariacionRepository;
@@ -103,7 +105,7 @@ public class InventarioService {
         return variacionRepository.save(nuevaVariacion);
     }
 
-    public InventarioDTO update(Long id, InventarioDTO inventarioDTO) {
+    public InventarioDTO update(Long id, InventarioDTO inventarioDTO, UsuarioDTO usuarioDTO) {
         if (inventarioDTO.getVariacion() == null) {
             throw new DAOException("La variación no puede ser nula.");
         }
@@ -132,11 +134,13 @@ public class InventarioService {
         inventarioExistente.setPrecioUnitario(inventarioDTO.getPrecioUnitario());
 
         List<MovimientoInventario> movimientos = new ArrayList<>();
+        Usuario usuario = usuarioDTO.toEntity();
 
         if (inventarioExistente.getCantidad() != inventarioDTO.getCantidad()) {
             // Crear y configurar el movimiento
             MovimientoInventario movimiento = crearMovimientoInventario(
                     inventarioExistente,
+                    usuario,
                     inventarioDTO.getCantidad(),
                     TipoMovimientoEnum.AJUSTE);
 
@@ -153,16 +157,16 @@ public class InventarioService {
         return InventarioDTO.fromEntity(inventarioGuardado);
     }
 
-    private MovimientoInventario crearMovimientoInventario(Inventario inventario, Long cantidad,
+    private MovimientoInventario crearMovimientoInventario(Inventario inventario, Usuario usuario, Long cantidad,
             TipoMovimientoEnum tipoMovimiento) {
         MovimientoInventario movimiento = new MovimientoInventario();
         movimiento.setInventario(inventario);
-        movimiento.setUsuario(null);
+        movimiento.setUsuario(usuario);
         movimiento.setTipoMovimiento(tipoMovimiento);
         movimiento.setCantidad(cantidad);
         movimiento.setCantidadAnterior(inventario.getCantidad());
         movimiento.setCantidadActual(cantidad);
-        movimiento.setObservacion("Ajuste de Inventario");
+        movimiento.setObservacion("Ajuste de Inventario, se actualizo el stock directamente");
         movimiento.setFecha(LocalDateTime.now());
         return movimiento;
     }

@@ -39,7 +39,7 @@ public class ProductoService {
             throw new DAOException("El nombre ya está registrado.");
         }
 
-        producto.setEstado(EstadoEnum.ACTIVO); 
+        producto.setEstado(EstadoEnum.ACTIVO);
         Producto productoGuardado = productoRepository.save(producto);
         return ProductoDTO.fromEntity(productoGuardado);
     }
@@ -69,6 +69,15 @@ public class ProductoService {
 
         return ProductoDTO.fromEntity(productoRepository.save(productoExistente));
 
+    }
+
+    // Cambiar el estado
+    public Producto cambiarEstado(Long id, EstadoEnum nuevoEstado) {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new DAOException("Producto no encontrado con el ID: " + id));
+
+        producto.setEstado(nuevoEstado);
+        return productoRepository.save(producto);
     }
 
     public void deleteById(Long id) {

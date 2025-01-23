@@ -1,6 +1,8 @@
 package com.danilore.piniateria_lizzety.controller.producto;
 
 import com.danilore.piniateria_lizzety.dto.producto.ProductoDTO;
+import com.danilore.piniateria_lizzety.model.EstadoEnum;
+import com.danilore.piniateria_lizzety.model.producto.Producto;
 import com.danilore.piniateria_lizzety.service.producto.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,13 @@ public class ProductoController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductoDTO> update(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) {
         return ResponseEntity.ok(productoService.update(id, productoDTO));
+    }
+
+    // Cambiar el estado
+    @PatchMapping("/cambiar-estado/{id}")
+    public ProductoDTO cambiarEstado(@PathVariable Long id, @RequestParam EstadoEnum nuevoEstado) {
+        Producto producto = productoService.cambiarEstado(id, nuevoEstado);
+        return ProductoDTO.fromEntity(producto); // Convertir entidad a dto
     }
 
     @DeleteMapping("/{id}")

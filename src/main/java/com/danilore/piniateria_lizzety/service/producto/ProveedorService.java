@@ -44,7 +44,7 @@ public class ProveedorService {
             throw new DAOException("El telefono ya está registrado.");
         }
 
-        proveedor.setEstado(EstadoEnum.ACTIVO); 
+        proveedor.setEstado(EstadoEnum.ACTIVO);
         Proveedor savedProveedor = proveedorRepository.save(proveedor);
         return ProveedorDTO.fromEntity(savedProveedor);
     }
@@ -61,6 +61,15 @@ public class ProveedorService {
         proveedorExistente.setTelefono(proveedorActualizado.getTelefono());
 
         return ProveedorDTO.fromEntity(proveedorRepository.save(proveedorExistente));
+    }
+
+    // Cambiar el estado
+    public Proveedor cambiarEstado(Long id, EstadoEnum nuevoEstado) {
+        Proveedor proveedor = proveedorRepository.findById(id)
+                .orElseThrow(() -> new DAOException("Proveedor no encontrado con el ID: " + id));
+
+        proveedor.setEstado(nuevoEstado);
+        return proveedorRepository.save(proveedor);
     }
 
     public void deleteById(Long id) {
