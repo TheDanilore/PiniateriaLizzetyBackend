@@ -1,4 +1,4 @@
-# Piñateria Lizzety
+# Piñateria Lizzety Backend
 
 API REST para gestion de inventario de Piñateria Lizzety.
 
