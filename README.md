@@ -1,6 +1,6 @@
-# Prueba Play Group
+# Piñateria Lizzety
 
-API REST que permite con todas la gestion de producto, y usuarios.
+API REST para gestion de inventario de Piñateria Lizzety.
 
 
 ---
