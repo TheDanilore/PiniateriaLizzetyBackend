@@ -4,14 +4,25 @@ import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.service.usuario.UsuarioService;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.springframework.beans.factory.annotation.Autowired; // Importa la clase Autowired
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*; // Importa las clases para la anotación de los métodos
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController // Indica que esta clase es un controlador REST
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
+
+    private static final String UPLOAD_DIR = "uploads/"; // Carpeta donde se guardarán las imágenes
 
     @Autowired // Inyección de dependencias
     private UsuarioService usuarioService; // Servicio para la entidad Usuario
@@ -70,6 +81,32 @@ public class UsuarioController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(usuarioService.buscarPorCriterio(criterio, page, size));
+    }
+
+    @PostMapping("/upload-avatar")
+    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El archivo está vacío.");
+        }
+
+        try {
+            // Crear carpeta si no existe
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            // Guardar la imagen en el servidor
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+            Files.write(path, file.getBytes());
+
+            // Devolver la ruta relativa para guardar en la base de datos
+            return ResponseEntity.ok("/" + UPLOAD_DIR + fileName);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al subir la imagen.");
+        }
     }
 
 }
