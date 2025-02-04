@@ -24,7 +24,7 @@ public class UsuarioService {
     public Usuario autenticar(String email, String password) throws DAOException {
         // Cargar usuario por email y roles
         Usuario usuario = usuarioRepository.findByEmailWithRoles(email)
-                .orElseThrow(() -> new DAOException("Usuario no encontrado o inactivo."));
+                .orElseThrow(() -> new DAOException("Usuario no encontrado."));
 
         if (usuario.getEstado() != EstadoEnum.ACTIVO) {
             throw new DAOException("Usuario no está activo.");
@@ -110,7 +110,7 @@ public class UsuarioService {
     // Eliminar usuario por ID
     public void deleteById(Long id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new DAOException("Usuario no encontrado");
+            throw new DAOException("Usuario no encontrado con el ID: " + id);
         }
         usuarioRepository.deleteById(id);
     }
