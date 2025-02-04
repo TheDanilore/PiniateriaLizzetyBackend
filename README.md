@@ -11,9 +11,11 @@ El proyecto se ha desarrollado utilizando las siguientes tecnologías:
 
 - **Java JDK 17**
 - **SpringBoot 3.x**
+- **Gradlew**
 - **MySQL** (Base de datos)
 - **Docker Compose** (Entorno de contenedores)
 - **MailHog** (Gestor de correos para desarrollo)
+- **Visual Studio Code** (Editor de código)
 
 ---
 
