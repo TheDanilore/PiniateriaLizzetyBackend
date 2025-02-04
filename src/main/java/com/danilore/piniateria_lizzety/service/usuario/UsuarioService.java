@@ -58,29 +58,6 @@ public class UsuarioService {
     }
 
     // Guardar un nuevo usuario
-    public UsuarioDTO save(UsuarioDTO usuarioDTO) {
-        Usuario usuario = usuarioDTO.toEntity();
-
-        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
-            throw new DAOException("El email ya está registrado.");
-        }
-        if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
-            throw new DAOException("La contraseña es obligatoria.");
-        }
-
-        // Verifica si los roles son nulos o vacíos y los inicializa
-        if (usuario.getRoles() == null || usuario.getRoles().isEmpty()) {
-            usuario.setRoles(new HashSet<>());
-        }
-
-        // Encriptar la contraseña
-        usuario.setPassword(BCrypt.hashpw(usuario.getPassword(), BCrypt.gensalt()));
-        usuario.setEstado(EstadoEnum.ACTIVO); // Estado por defecto
-
-        Usuario savedUsuario = usuarioRepository.save(usuario);
-        return UsuarioDTO.fromEntity(savedUsuario);
-    }
-
     @Transactional
     public UsuarioDTO save(UsuarioDTO usuarioDTO, String avatarUrl) {
         Usuario usuario = usuarioDTO.toEntity();

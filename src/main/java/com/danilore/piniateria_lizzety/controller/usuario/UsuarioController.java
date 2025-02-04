@@ -4,7 +4,10 @@ import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.service.usuario.UsuarioService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,27 +53,41 @@ public class UsuarioController {
         try {
             // Convertir JSON a UsuarioDTO
             ObjectMapper objectMapper = new ObjectMapper();
-            UsuarioDTO usuarioDTO = objectMapper.readValue(usuarioJson, UsuarioDTO.class);
-    
+            objectMapper.registerModule(new JavaTimeModule()); // Agrega soporte para LocalDateTime
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+            UsuarioDTO usuarioDTO;
+            try {
+                usuarioDTO = objectMapper.readValue(usuarioJson, UsuarioDTO.class);
+            } catch (JsonProcessingException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Error al procesar JSON: " + e.getMessage());
+            }
+
             // Guardar imagen si existe
             String avatarUrl = null;
             if (file != null && !file.isEmpty()) {
                 avatarUrl = saveImage(file);
             }
-    
+
             // Guardar usuario en la BD
             UsuarioDTO savedUsuario = usuarioService.save(usuarioDTO, avatarUrl);
             return ResponseEntity.ok(savedUsuario);
-    
+
         } catch (Exception e) {
             e.printStackTrace(); // 🔴 Esto mostrará el error exacto en la consola
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error: " + e.getMessage()); // Devolver el mensaje de error en la respuesta
+                    .body("Error: " + e.getMessage()); // Devolver el mensaje de error en la
+                                                                          // respuesta
         }
     }
-    
+
     // Método para guardar la imagen en el servidor y devolver la ruta
     private String saveImage(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return null; // Si no hay archivo, no guardar nada
+        }
+
         // Crear carpeta si no existe
         File uploadDir = new File(UPLOAD_DIR);
         if (!uploadDir.exists()) {
