@@ -42,8 +42,42 @@ public class UsuarioController {
 
     // Guardar un nuevo usuario
     @PostMapping
-    public ResponseEntity<UsuarioDTO> save(@RequestBody UsuarioDTO usuarioDTO) {
-        return ResponseEntity.ok(usuarioService.save(usuarioDTO));
+    public ResponseEntity<UsuarioDTO> saveUsuario(
+            @RequestPart("usuario") UsuarioDTO usuarioDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        try {
+            String avatarUrl = null;
+
+            // Si se adjunta una imagen, se guarda en el servidor
+            if (file != null && !file.isEmpty()) {
+                avatarUrl = saveImage(file);
+            }
+
+            // Guardar usuario con la URL del avatar
+            UsuarioDTO savedUser = usuarioService.save(usuarioDTO, avatarUrl);
+            return ResponseEntity.ok(savedUser);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    // Método para guardar la imagen en el servidor y devolver la ruta
+    private String saveImage(MultipartFile file) throws IOException {
+        // Crear carpeta si no existe
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
+        // Guardar el archivo con un nombre único
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        Path path = Paths.get(UPLOAD_DIR + fileName);
+        Files.write(path, file.getBytes());
+
+        // Retornar la ruta relativa de la imagen
+        return "/" + UPLOAD_DIR + fileName;
     }
 
     // Editar un usuario existente

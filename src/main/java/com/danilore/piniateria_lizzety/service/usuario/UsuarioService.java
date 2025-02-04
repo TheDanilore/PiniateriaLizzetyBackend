@@ -5,6 +5,9 @@ import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.repository.usuario.UsuarioRepository;
+
+import jakarta.transaction.Transactional;
+
 import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -78,6 +81,7 @@ public class UsuarioService {
         return UsuarioDTO.fromEntity(savedUsuario);
     }
 
+    @Transactional
     public UsuarioDTO save(UsuarioDTO usuarioDTO, String avatarUrl) {
         Usuario usuario = usuarioDTO.toEntity();
 
@@ -96,7 +100,11 @@ public class UsuarioService {
         // Encriptar la contraseña
         usuario.setPassword(BCrypt.hashpw(usuario.getPassword(), BCrypt.gensalt()));
         usuario.setEstado(EstadoEnum.ACTIVO); // Estado por defecto
-        usuario.setAvatar(avatarUrl); // Guardar la URL en la BD
+
+        // Guardar la URL de la imagen si existe
+        if (avatarUrl != null) {
+            usuario.setAvatar(avatarUrl);
+        }
 
         Usuario savedUsuario = usuarioRepository.save(usuario);
         return UsuarioDTO.fromEntity(savedUsuario);
