@@ -4,6 +4,7 @@ import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.service.usuario.UsuarioService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.nio.file.Paths;
 import org.springframework.beans.factory.annotation.Autowired; // Importa la clase Autowired
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*; // Importa las clases para la anotación de los métodos
 import org.springframework.web.multipart.MultipartFile;
@@ -41,28 +43,32 @@ public class UsuarioController {
     }
 
     // Guardar un nuevo usuario
-    @PostMapping
-    public ResponseEntity<UsuarioDTO> saveUsuario(
-            @RequestPart("usuario") UsuarioDTO usuarioDTO,
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> save(
+            @RequestPart("usuario") String usuarioJson,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
+            // Convertir JSON a UsuarioDTO
+            ObjectMapper objectMapper = new ObjectMapper();
+            UsuarioDTO usuarioDTO = objectMapper.readValue(usuarioJson, UsuarioDTO.class);
+    
+            // Guardar imagen si existe
             String avatarUrl = null;
-
-            // Si se adjunta una imagen, se guarda en el servidor
             if (file != null && !file.isEmpty()) {
                 avatarUrl = saveImage(file);
             }
-
-            // Guardar usuario con la URL del avatar
-            UsuarioDTO savedUser = usuarioService.save(usuarioDTO, avatarUrl);
-            return ResponseEntity.ok(savedUser);
-
+    
+            // Guardar usuario en la BD
+            UsuarioDTO savedUsuario = usuarioService.save(usuarioDTO, avatarUrl);
+            return ResponseEntity.ok(savedUsuario);
+    
         } catch (Exception e) {
+            e.printStackTrace(); // 🔴 Esto mostrará el error exacto en la consola
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+                    .body("Error: " + e.getMessage()); // Devolver el mensaje de error en la respuesta
         }
     }
-
+    
     // Método para guardar la imagen en el servidor y devolver la ruta
     private String saveImage(MultipartFile file) throws IOException {
         // Crear carpeta si no existe
