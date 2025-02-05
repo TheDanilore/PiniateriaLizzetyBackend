@@ -47,7 +47,6 @@ public class UsuarioService {
     public Page<UsuarioDTO> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Usuario> usuarioPage = usuarioRepository.findAll(pageable);
-
         return usuarioPage.map(UsuarioDTO::fromEntity);
     }
 

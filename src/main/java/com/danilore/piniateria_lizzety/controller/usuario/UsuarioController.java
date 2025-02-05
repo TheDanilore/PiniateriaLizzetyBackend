@@ -27,7 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    private static final String UPLOAD_DIR = "uploads/"; // Carpeta donde se guardarán las imágenes
+    // Ruta al nivel del proyecto (fuera de src/)
+    private static final String UPLOAD_DIR = "uploads/";
 
     @Autowired // Inyección de dependencias
     private UsuarioService usuarioService; // Servicio para la entidad Usuario
@@ -78,7 +79,7 @@ public class UsuarioController {
             e.printStackTrace(); // 🔴 Esto mostrará el error exacto en la consola
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error: " + e.getMessage()); // Devolver el mensaje de error en la
-                                                                          // respuesta
+                                                       // respuesta
         }
     }
 
@@ -100,7 +101,7 @@ public class UsuarioController {
         Files.write(path, file.getBytes());
 
         // Retornar la ruta relativa de la imagen
-        return "/" + UPLOAD_DIR + fileName;
+        return "/uploads/" + fileName;
     }
 
     // Editar un usuario existente
