@@ -1,27 +1,47 @@
 package com.danilore.piniateria_lizzety.service.usuario;
 
+import com.danilore.piniateria_lizzety.dto.usuario.RolDTO;
 import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.exception.DAOException;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.repository.usuario.UsuarioRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.transaction.Transactional;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ObjectMapper objectMapper;
+    private static final String UPLOAD_DIR = "uploads/";
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
 
     // Autenticación
     public Usuario autenticar(String email, String password) throws DAOException {
@@ -58,52 +78,87 @@ public class UsuarioService {
 
     // Guardar un nuevo usuario
     @Transactional
-    public UsuarioDTO save(UsuarioDTO usuarioDTO, String avatarUrl) {
-        Usuario usuario = usuarioDTO.toEntity();
+    public UsuarioDTO save(String usuarioJson, MultipartFile file) {
+        try {
+            UsuarioDTO usuarioDTO = objectMapper.readValue(usuarioJson, UsuarioDTO.class);
+            Usuario usuario = usuarioDTO.toEntity();
 
-        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
-            throw new DAOException("El email ya está registrado.");
+            if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+                throw new DAOException("El email ya está registrado.");
+            }
+            if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+                throw new DAOException("La contraseña es obligatoria.");
+            }
+
+            usuario.setPassword(BCrypt.hashpw(usuario.getPassword(), BCrypt.gensalt()));
+            usuario.setEstado(EstadoEnum.ACTIVO);
+            usuario.setRoles(usuario.getRoles() == null ? new HashSet<>() : usuario.getRoles());
+
+            if (file != null && !file.isEmpty()) {
+                usuario.setAvatar(saveImage(file));
+            }
+
+            Usuario savedUsuario = usuarioRepository.save(usuario);
+            return UsuarioDTO.fromEntity(savedUsuario);
+
+        } catch (JsonProcessingException e) {
+            throw new DAOException("Error al procesar JSON: " + e.getMessage());
         }
-        if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
-            throw new DAOException("La contraseña es obligatoria.");
-        }
-
-        // Verifica si los roles son nulos o vacíos y los inicializa
-        if (usuario.getRoles() == null || usuario.getRoles().isEmpty()) {
-            usuario.setRoles(new HashSet<>());
-        }
-
-        // Encriptar la contraseña
-        usuario.setPassword(BCrypt.hashpw(usuario.getPassword(), BCrypt.gensalt()));
-        usuario.setEstado(EstadoEnum.ACTIVO); // Estado por defecto
-
-        // Guardar la URL de la imagen si existe
-        if (avatarUrl != null) {
-            usuario.setAvatar(avatarUrl);
-        }
-
-        Usuario savedUsuario = usuarioRepository.save(usuario);
-        return UsuarioDTO.fromEntity(savedUsuario);
     }
 
-    public UsuarioDTO update(Long id, UsuarioDTO usuarioDTO) {
-        // Convertir el DTO en una entidad Usuario
-        Usuario usuarioActualizado = usuarioDTO.toEntity();
+    @Transactional
+    public UsuarioDTO update(Long id, String usuarioJson, MultipartFile file) {
+        try {
+            UsuarioDTO usuarioDTO = objectMapper.readValue(usuarioJson, UsuarioDTO.class);
+            Usuario usuarioExistente = usuarioRepository.findById(id)
+                    .orElseThrow(() -> new DAOException("Usuario no encontrado con ID: " + id));
 
-        Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new DAOException("Usuario no encontrado con ID: " + id));
+            if (usuarioRepository.findByEmail(usuarioDTO.getEmail()).isPresent()
+                    && !usuarioExistente.getId().equals(id)) {
+                throw new DAOException("El email ya está registrado.");
+            }
 
-        usuarioExistente.setNombre(usuarioActualizado.getNombre());
-        usuarioExistente.setEmail(usuarioActualizado.getEmail());
+            usuarioExistente.setNombre(usuarioDTO.getNombre());
+            usuarioExistente.setEmail(usuarioDTO.getEmail());
 
-        if (usuarioActualizado.getPassword() != null && !usuarioActualizado.getPassword().isEmpty()) {
-            usuarioExistente.setPassword(BCrypt.hashpw(usuarioActualizado.getPassword(), BCrypt.gensalt()));
+            // Si hay una nueva contraseña, la actualizamos
+            if (usuarioDTO.getPassword() != null && !usuarioDTO.getPassword().isEmpty()) {
+                usuarioExistente.setPassword(BCrypt.hashpw(usuarioDTO.getPassword(), BCrypt.gensalt()));
+            }
+
+            usuarioExistente
+                    .setRoles(usuarioDTO.getRoles() != null
+                            ? usuarioDTO.getRoles().stream().map(RolDTO::toEntity).collect(Collectors.toSet())
+                            : new HashSet<>());
+
+            // Si hay una nueva imagen, actualizarla
+            if (file != null && !file.isEmpty()) {
+                usuarioExistente.setAvatar(saveImage(file));
+            }
+
+            Usuario savedUsuario = usuarioRepository.save(usuarioExistente);
+            return UsuarioDTO.fromEntity(savedUsuario);
+
+        } catch (JsonProcessingException e) {
+            throw new DAOException("Error al procesar JSON: " + e.getMessage());
         }
-        usuarioExistente
-                .setRoles(usuarioActualizado.getRoles() != null ? usuarioActualizado.getRoles() : new HashSet<>());
+    }
 
-        // Convertir la entidad actualizada nuevamente a DTO y devolverla
-        return UsuarioDTO.fromEntity(usuarioRepository.save(usuarioExistente));
+    private String saveImage(MultipartFile file) {
+        try {
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+            Files.write(path, file.getBytes());
+
+            return "/uploads/" + fileName;
+        } catch (IOException e) {
+            throw new DAOException("Error al guardar la imagen: " + e.getMessage());
+        }
     }
 
     // Cambiar el estado de un usuario

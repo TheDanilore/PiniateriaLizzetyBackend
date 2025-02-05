@@ -4,20 +4,7 @@ import com.danilore.piniateria_lizzety.dto.usuario.UsuarioDTO;
 import com.danilore.piniateria_lizzety.model.EstadoEnum;
 import com.danilore.piniateria_lizzety.model.usuario.Usuario;
 import com.danilore.piniateria_lizzety.service.usuario.UsuarioService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.springframework.beans.factory.annotation.Autowired; // Importa la clase Autowired
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*; // Importa las clases para la anotación de los métodos
@@ -27,12 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    // Ruta al nivel del proyecto (fuera de src/)
-    private static final String UPLOAD_DIR = "uploads/";
+    private final UsuarioService usuarioService;
 
-    @Autowired // Inyección de dependencias
-    private UsuarioService usuarioService; // Servicio para la entidad Usuario
-
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
     // Listar todos los usuarios
     @GetMapping
     public ResponseEntity<Page<UsuarioDTO>> getAll(@RequestParam(defaultValue = "0") int page,
@@ -48,67 +34,22 @@ public class UsuarioController {
 
     // Guardar un nuevo usuario
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> save(
+    public ResponseEntity<UsuarioDTO> save(
             @RequestPart("usuario") String usuarioJson,
             @RequestPart(value = "file", required = false) MultipartFile file) {
-        try {
-            // Convertir JSON a UsuarioDTO
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule()); // Agrega soporte para LocalDateTime
-            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-            UsuarioDTO usuarioDTO;
-            try {
-                usuarioDTO = objectMapper.readValue(usuarioJson, UsuarioDTO.class);
-            } catch (JsonProcessingException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Error al procesar JSON: " + e.getMessage());
-            }
-
-            // Guardar imagen si existe
-            String avatarUrl = null;
-            if (file != null && !file.isEmpty()) {
-                avatarUrl = saveImage(file);
-            }
-
-            // Guardar usuario en la BD
-            UsuarioDTO savedUsuario = usuarioService.save(usuarioDTO, avatarUrl);
-            return ResponseEntity.ok(savedUsuario);
-
-        } catch (Exception e) {
-            e.printStackTrace(); // 🔴 Esto mostrará el error exacto en la consola
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error: " + e.getMessage()); // Devolver el mensaje de error en la
-                                                       // respuesta
-        }
-    }
-
-    // Método para guardar la imagen en el servidor y devolver la ruta
-    private String saveImage(MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) {
-            return null; // Si no hay archivo, no guardar nada
-        }
-
-        // Crear carpeta si no existe
-        File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        // Guardar el archivo con un nombre único
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path path = Paths.get(UPLOAD_DIR + fileName);
-        Files.write(path, file.getBytes());
-
-        // Retornar la ruta relativa de la imagen
-        return "/uploads/" + fileName;
+        UsuarioDTO savedUsuario = usuarioService.save(usuarioJson, file);
+        return ResponseEntity.ok(savedUsuario);
     }
 
     // Editar un usuario existente
+    // Editar un usuario existente
     @PutMapping("/editar/{id}")
-    public ResponseEntity<UsuarioDTO> update(@PathVariable Long id,
-            @RequestBody UsuarioDTO usuarioDTO) {
-        return ResponseEntity.ok(usuarioService.update(id, usuarioDTO));
+    public ResponseEntity<UsuarioDTO> update(
+            @PathVariable Long id,
+            @RequestPart("usuario") String usuarioJson,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+        UsuarioDTO updatedUsuario = usuarioService.update(id, usuarioJson, file);
+        return ResponseEntity.ok(updatedUsuario);
     }
 
     // Cambiar el estado de un usuario
@@ -139,32 +80,6 @@ public class UsuarioController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(usuarioService.buscarPorCriterio(criterio, page, size));
-    }
-
-    @PostMapping("/upload-avatar")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El archivo está vacío.");
-        }
-
-        try {
-            // Crear carpeta si no existe
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-
-            // Guardar la imagen en el servidor
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            Path path = Paths.get(UPLOAD_DIR + fileName);
-            Files.write(path, file.getBytes());
-
-            // Devolver la ruta relativa para guardar en la base de datos
-            return ResponseEntity.ok("/" + UPLOAD_DIR + fileName);
-
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al subir la imagen.");
-        }
     }
 
 }
