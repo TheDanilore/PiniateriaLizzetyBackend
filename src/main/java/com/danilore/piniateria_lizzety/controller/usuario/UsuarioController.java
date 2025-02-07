@@ -42,7 +42,6 @@ public class UsuarioController {
     }
 
     // Editar un usuario existente
-    // Editar un usuario existente
     @PutMapping("/editar/{id}")
     public ResponseEntity<UsuarioDTO> update(
             @PathVariable Long id,
